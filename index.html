@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>运动康复小程序预览</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: radial-gradient(circle at 50% 0%, #ffffff 0, #e8eef7 48%, #dbe5f2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font: inherit; }
+    button { padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; }
+
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #000;
+      border-radius: 48px;
+      padding: 12px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #f8f9fc;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      background: #fff;
+      position: relative;
+      z-index: 5;
+    }
+    .nav-back {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #2B6CB0;
+      display: none;
+    }
+    .nav-back.show { display: block; }
+
+    .page-container {
+      flex: 1;
+      overflow-y: auto;
+      position: relative;
+    }
+    .page-container::-webkit-scrollbar { display: none; }
+
+    .page {
+      display: none;
+      min-height: 100%;
+      padding-bottom: 24px;
+    }
+    .page.active { display: block; }
+
+    /* ===== 通用样式 ===== */
+    .safety-banner {
+      background: #FFFFF0;
+      border-left: 3px solid #D69E2E;
+      padding: 12px 16px;
+      margin: 12px;
+      border-radius: 0 12px 12px 0;
+      font-size: 13px;
+      color: #4A5568;
+      line-height: 1.5;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 0 12px 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .card-title { font-size: 18px; font-weight: 700; color: #1A202C; margin-bottom: 12px; }
+    .card-subtitle { font-size: 14px; color: #718096; line-height: 1.5; margin-bottom: 12px; }
+    .btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      transition: all 0.15s ease;
+    }
+    .btn-primary { background: #2B6CB0; color: #fff; }
+    .btn-primary:active { opacity: 0.85; }
+    .btn-secondary { background: #EDF2F7; color: #2D3748; }
+    .btn-outline { background: transparent; color: #2B6CB0; border: 2px solid #2B6CB0; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tag-green { background: #F0FFF4; color: #38A169; }
+    .tag-red { background: #FFF5F5; color: #E53E3E; }
+    .tag-yellow { background: #FFFFF0; color: #D69E2E; }
+    .tag-blue { background: #EBF8FF; color: #2B6CB0; }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .empty-icon { font-size: 50px; margin-bottom: 12px; }
+    .empty-title { font-size: 18px; font-weight: 700; color: #2D3748; margin-bottom: 6px; }
+    .empty-desc { font-size: 14px; color: #A0AEC0; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 100px;
+      transform: translateX(-50%) translateY(20px);
+      background: #1A202C;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      max-width: 300px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .modal-mask {
+      position: fixed;
+      inset: 44px 12px 12px;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      border-radius: 0 0 40px 40px;
+    }
+    .modal-mask.open { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      width: 100%;
+      max-height: 70vh;
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    /* ===== 首页 ===== */
+    .assessment-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 16px;
+      background: #F7FAFC;
+      border-radius: 14px;
+      border-left: 4px solid #2B6CB0;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .assessment-card:active { background: #EDF2F7; transform: scale(0.99); }
+    .assessment-card:last-child { margin-bottom: 0; }
+    .assessment-icon { font-size: 32px; flex-shrink: 0; }
+    .assessment-info { flex: 1; }
+    .assessment-title { font-size: 17px; font-weight: 700; color: #1A202C; }
+    .assessment-subtitle { font-size: 13px; color: #718096; margin-top: 2px; }
+    .assessment-arrow { font-size: 22px; color: #A0AEC0; }
+    .contact-card { background: linear-gradient(135deg, #EBF8FF, #fff); }
+    .contact-title { font-size: 18px; font-weight: 700; color: #1A202C; }
+    .contact-desc { font-size: 14px; color: #4A5568; margin-top: 4px; }
+    .contact-area { margin-top: 8px; }
+    .exercise-preview { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .exercise-mini {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      background: #F7FAFC;
+      border-radius: 12px;
+    }
+    .exercise-mini-poster {
+      width: 70px;
+      height: 52px;
+      border-radius: 10px;
+      background: #EDF2F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .exercise-mini-title { font-size: 15px; font-weight: 700; color: #1A202C; margin-bottom: 4px; }
+    .policy-link { text-align: center; padding: 16px; font-size: 13px; color: #A0AEC0; text-decoration: underline; cursor: pointer; }
+
+    /* ===== 问卷页 ===== */
+    .page-header { padding: 20px; background: #fff; margin-bottom: 12px; }
+    .page-title { font-size: 24px; font-weight: 700; color: #1A202C; }
+    .page-subtitle { font-size: 14px; color: #718096; margin-top: 4px; }
+    .disclaimer-card { text-align: center; }
+    .disclaimer-title { font-size: 20px; font-weight: 700; color: #D69E2E; margin-bottom: 16px; }
+    .disclaimer-content { text-align: left; margin-bottom: 20px; }
+    .disclaimer-content p { margin: 0 0 8px; font-size: 15px; color: #4A5568; line-height: 1.6; }
+    .question-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      margin: 0 12px 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .question-label { font-size: 16px; font-weight: 600; color: #1A202C; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .question-num { width: 26px; height: 26px; border-radius: 50%; background: #2B6CB0; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .question-required { color: #E53E3E; }
+    .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-item, .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #F7FAFC;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 15px;
+      color: #4A5568;
+    }
+    .radio-item:hover, .checkbox-item:hover { background: #EDF2F7; }
+    .radio-item.selected, .checkbox-item.selected { background: #EBF8FF; border: 2px solid #2B6CB0; }
+    .radio-item input, .checkbox-item input { width: 18px; height: 18px; accent-color: #2B6CB0; }
+    .slider-wrap { padding: 8px 0; }
+    .slider-wrap input[type="range"] { width: 100%; accent-color: #2B6CB0; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 13px; color: #A0AEC0; margin-top: 4px; }
+    .slider-value { font-size: 24px; font-weight: 700; color: #2B6CB0; text-align: center; margin-bottom: 4px; }
+    .submit-area { padding: 12px 12px 24px; }
+    .privacy-modal-title { font-size: 20px; font-weight: 700; color: #1A202C; margin-bottom: 12px; }
+    .privacy-modal-content p { margin: 0 0 8px; font-size: 14px; color: #4A5568; line-height: 1.6; }
+    .privacy-actions { display: flex; gap: 12px; margin-top: 16px; }
+    .privacy-actions .btn { flex: 1; }
+
+    /* ===== 结果页 ===== */
+    .risk-card {
+      margin: 12px;
+      padding: 24px 20px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .risk-low .risk-badge { background: #F0FFF4; color: #38A169; }
+    .risk-medium .risk-badge { background: #FFFFF0; color: #D69E2E; }
+    .risk-high .risk-badge { background: #FFF5F5; color: #E53E3E; }
+    .risk-summary { font-size: 15px; color: #4A5568; line-height: 1.6; margin-bottom: 16px; }
+    .risk-reason-title, .risk-step-title { font-size: 14px; font-weight: 700; color: #718096; margin-bottom: 8px; }
+    .risk-reason-item, .risk-step-item { font-size: 14px; color: #4A5568; padding: 4px 0; }
+    .warning-card {
+      text-align: center;
+      padding: 32px 20px;
+      background: #FFF5F5;
+      border: 2px solid rgba(229,62,62,0.08);
+    }
+    .warning-icon { font-size: 44px; margin-bottom: 10px; }
+    .warning-title { font-size: 20px; font-weight: 700; color: #E53E3E; margin-bottom: 8px; }
+    .warning-desc { font-size: 15px; color: #4A5568; line-height: 1.6; }
+    .action-section { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .safety-footer { padding: 16px; text-align: center; font-size: 12px; color: #A0AEC0; }
+
+    /* ===== 动作库 ===== */
+    .filter-bar { background: #fff; padding: 12px 12px; margin-bottom: 8px; }
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4A5568;
+      background: #EDF2F7;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip.active { background: #2B6CB0; color: #fff; }
+    .exercise-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .exercise-card {
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .exercise-card:active { transform: scale(0.99); background: #F7FAFC; }
+    .exercise-poster {
+      width: 90px;
+      height: 68px;
+      border-radius: 10px;
+      background: #EDF2F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .exercise-card-right { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+    .exercise-card-title { font-size: 16px; font-weight: 700; color: #1A202C; }
+    .exercise-card-tags { display: flex; gap: 6px; }
+    .exercise-card-risk-text { font-size: 12px; font-weight: 600; }
+    .exercise-card-risk-text.safe { color: #38A169; }
+    .exercise-card-risk-text.danger { color: #E53E3E; }
+
+    /* ===== 动作详情 ===== */
+    .video-wrap {
+      width: 100%;
+      background: #1A202C;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      position: relative;
+    }
+    .video-placeholder { text-align: center; }
+    .video-placeholder-icon { font-size: 48px; margin-bottom: 8px; }
+    .video-placeholder-text { font-size: 14px; color: #A0AEC0; }
+    .play-btn {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #2B6CB0;
+      cursor: pointer;
+    }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 16px; font-weight: 700; color: #1A202C; margin-bottom: 10px; }
+    .section-content { font-size: 14px; color: #4A5568; line-height: 1.6; }
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+    .step-item { display: flex; gap: 10px; align-items: flex-start; }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #2B6CB0;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text { flex: 1; font-size: 14px; color: #4A5568; line-height: 1.5; padding-top: 2px; }
+    .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .warning-list { display: flex; flex-direction: column; gap: 6px; }
+    .warning-item { font-size: 13px; color: #4A5568; padding: 8px 12px; background: #FFFFF0; border-radius: 8px; }
+    .stop-section { background: #FFF5F5; border-radius: 14px; padding: 16px; margin-bottom: 0; }
+    .stop-section .section-title { color: #E53E3E; }
+    .stop-item { font-size: 14px; color: #E53E3E; font-weight: 600; padding: 4px 0; }
+    .fixed-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      z-index: 50;
+    }
+    .detail-scroll { padding-bottom: 72px; }
+
+    /* ===== 客服弹层 ===== */
+    .contact-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .contact-title { font-size: 18px; font-weight: 700; color: #1A202C; }
+    .contact-close { width: 32px; height: 32px; border-radius: 50%; background: #EDF2F7; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #718096; cursor: pointer; }
+    .qr-section { text-align: center; margin-bottom: 16px; }
+    .qr-placeholder { width: 160px; height: 160px; border-radius: 12px; background: #F7FAFC; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 60px; }
+    .qr-tip { font-size: 13px; color: #A0AEC0; margin-top: 8px; }
+    .wechat-section { text-align: center; padding: 14px; background: #F7FAFC; border-radius: 12px; margin-bottom: 14px; }
+    .wechat-label { font-size: 13px; color: #718096; }
+    .wechat-id { font-size: 22px; font-weight: 700; color: #2B6CB0; font-family: ui-monospace, monospace; margin-top: 4px; }
+    .greeting-section, .summary-section { margin-bottom: 14px; }
+    .greeting-label, .summary-label { font-size: 14px; font-weight: 600; color: #4A5568; margin-bottom: 6px; }
+    .greeting-text, .summary-text { font-size: 13px; color: #4A5568; background: #EBF8FF; padding: 10px 12px; border-radius: 8px; }
+    .summary-text { background: #F7FAFC; max-height: 120px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; }
+    .service-text { font-size: 12px; color: #A0AEC0; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="status-bar">
+        <button class="nav-back" id="navBack" onclick="goBack()">‹</button>
+        <span id="navTitle">运动康复自查</span>
+      </div>
+
+      <div class="page-container" id="pageContainer">
+        <!-- ========== 首页 ========== -->
+        <div class="page active" id="pageHome">
+          <div class="safety-banner">
+            本自查仅用于风险提示和运动建议参考，不能替代医生诊断或线下康复评估。
+          </div>
+          <div class="card">
+            <div class="card-title">选择自查主题</div>
+            <div class="assessment-card" onclick="goToAssessment('knee_pain')">
+              <div class="assessment-icon">🦵</div>
+              <div class="assessment-info">
+                <div class="assessment-title">膝痛自查</div>
+                <div class="assessment-subtitle">跑步、跳跃后膝盖不适</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+            <div class="assessment-card" onclick="goToAssessment('ankle_sprain')" style="border-left-color:#38A169;">
+              <div class="assessment-icon">🦶</div>
+              <div class="assessment-info">
+                <div class="assessment-title">踝扭伤自查</div>
+                <div class="assessment-subtitle">崴脚、踝关节肿胀或疼痛</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">康复动作库</div>
+            <div class="card-subtitle">按部位和类别浏览通用康复动作</div>
+            <div class="exercise-preview" id="homeExercises"></div>
+            <button class="btn btn-outline" style="margin-top:14px;" onclick="goToPage('pageExerciseList')">查看全部动作</button>
+          </div>
+          <div class="card contact-card">
+            <div class="contact-title">需要专业评估？</div>
+            <div class="contact-desc">添加康复顾问微信，预约线下评估</div>
+            <div class="contact-area"><span class="tag tag-blue">📍 北京市区五环内</span></div>
+            <button class="btn btn-primary" style="margin-top:14px;" onclick="openContactModal('home')">预约线下评估</button>
+          </div>
+          <div class="policy-link" onclick="goToPage('pagePolicy')">隐私政策与用户协议</div>
+        </div>
+
+        <!-- ========== 隐私政策 ========== -->
+        <div class="page" id="pagePolicy">
+          <div class="card" style="margin-top:12px;">
+            <div class="card-title" style="text-align:center;">隐私政策与用户协议</div>
+            <div style="font-size:14px;color:#4A5568;line-height:1.8;white-space:pre-wrap;">
+<b>隐私政策（占位文本）</b>
+
+最后更新日期：2026年5月
+
+<b>1. 信息收集</b>
+我们收集您在使用自查服务时填写的健康相关信息，以及您主动授权的手机号等联系方式。
+
+<b>2. 信息使用</b>
+您的信息仅用于：
+- 生成自查结果和动作推荐
+- 客服沟通线下评估预约
+- 服务改进和质量监控
+
+<b>3. 信息保护</b>
+我们采用合理的安全措施保护您的个人信息，不会向第三方出售或共享。
+
+<b>4. 用户权利</b>
+您可以随时联系我们删除您的个人信息。
+
+<b>5. 免责声明</b>
+本小程序提供的自查结果仅供参考，不构成医学诊断。
+
+（上线前需替换为正式法务文本）
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== 自查问卷 ========== -->
+        <div class="page" id="pageAssessment">
+          <div class="page-header">
+            <div class="page-title" id="assessmentTitle">膝痛自查</div>
+            <div class="page-subtitle">请根据您最近的情况如实填写</div>
+          </div>
+          <div id="assessmentDisclaimer">
+            <div class="card disclaimer-card" style="margin-top:12px;">
+              <div class="disclaimer-title">⚠️ 自查说明</div>
+              <div class="disclaimer-content">
+                <p>本自查仅用于风险提示和运动建议参考，不能替代医生诊断或线下康复评估。</p>
+                <p>如有明显畸形、无法负重、急性严重肿胀等情况，请立即就医。</p>
+              </div>
+              <button class="btn btn-primary" onclick="acceptDisclaimer()">我已了解，开始自查</button>
+            </div>
+          </div>
+          <div id="assessmentQuestions" style="display:none;"></div>
+          <div id="assessmentSubmit" style="display:none;padding:12px 12px 24px;">
+            <button class="btn btn-primary" onclick="submitAssessment()">查看结果</button>
+          </div>
+        </div>
+
+        <!-- ========== 结果页 ========== -->
+        <div class="page" id="pageResult">
+          <div id="resultContent"></div>
+          <div class="action-section">
+            <button class="btn btn-secondary" onclick="copyResult()">📋 复制自查摘要</button>
+            <button class="btn btn-primary" onclick="openContactModal('result')">💬 添加康复顾问微信</button>
+            <button class="btn btn-outline" onclick="retakeAssessment()">🔄 重新自查</button>
+          </div>
+          <div class="safety-footer">
+            本结果仅为自查风险提示，请结合身体反应谨慎参考。
+          </div>
+        </div>
+
+        <!-- ========== 动作库 ========== -->
+        <div class="page" id="pageExerciseList">
+          <div class="filter-bar">
+            <div class="filter-group">
+              <div class="filter-chip active" onclick="filterArea('all',this)">全部</div>
+              <div class="filter-chip" onclick="filterArea('knee',this)">膝关节</div>
+              <div class="filter-chip" onclick="filterArea('ankle',this)">踝关节</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-chip active" onclick="filterCategory('all',this)">全部</div>
+              <div class="filter-chip" onclick="filterCategory('mobility',this)">活动度</div>
+              <div class="filter-chip" onclick="filterCategory('strength_activation',this)">力量激活</div>
+              <div class="filter-chip" onclick="filterCategory('stability',this)">稳定性</div>
+            </div>
+          </div>
+          <div class="exercise-list" id="exerciseList"></div>
+        </div>
+
+        <!-- ========== 动作详情 ========== -->
+        <div class="page" id="pageExerciseDetail">
+          <div class="detail-scroll">
+            <div class="video-wrap">
+              <div class="video-placeholder">
+                <div class="video-placeholder-icon">🎬</div>
+                <div class="video-placeholder-text">视频占位</div>
+              </div>
+              <div class="play-btn">▶</div>
+            </div>
+            <div class="card" id="exerciseDetailCard"></div>
+          </div>
+          <div class="fixed-bottom">
+            <button class="btn btn-primary" onclick="openContactModal('exercise')">💬 咨询康复顾问</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客服弹层 -->
+    <div class="modal-mask" id="contactModal" onclick="closeContactModal(event)">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="contact-header">
+          <div class="contact-title">添加康复顾问微信</div>
+          <div class="contact-close" onclick="closeContactModal()">×</div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-placeholder">📱</div>
+          <div class="qr-tip">长按识别二维码（占位）</div>
+        </div>
+        <div class="wechat-section">
+          <div class="wechat-label">微信号</div>
+          <div class="wechat-id">rehab_consultant</div>
+          <button class="btn btn-outline" style="margin-top:10px;height:40px;font-size:14px;" onclick="copyWechat()">复制微信号</button>
+        </div>
+        <div class="greeting-section">
+          <div class="greeting-label">💬 添加后请发送</div>
+          <div class="greeting-text">自查结果截图或复制内容给客服</div>
+        </div>
+        <div class="summary-section" id="modalSummarySection" style="display:none;">
+          <div class="summary-label">📋 自查摘要</div>
+          <div class="summary-text" id="modalSummaryText"></div>
+          <button class="btn btn-secondary" style="margin-top:10px;height:40px;font-size:14px;" onclick="copySummaryFromModal()">复制摘要</button>
+        </div>
+        <div class="service-text">⏰ 服务时间：工作日 9:00-18:00</div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+<script>
+// ==================== 数据 ====================
+const ASSESSMENT_CONFIGS = {
+  knee_pain: {
+    title: '膝痛自查',
+    questions: [
+      { field: 'pain_area', label: '疼痛位置', type: 'checkbox', required: true,
+        options: [{value:'front',label:'膝前侧'},{value:'back',label:'膝后侧'},{value:'inside',label:'膝内侧'},{value:'outside',label:'膝外侧'},{value:'whole',label:'整个膝盖'}] },
+      { field: 'pain_level', label: '疼痛程度（0-10分）', type: 'slider', required: true, min: 0, max: 10, step: 1, minLabel: '无痛', maxLabel: '剧痛' },
+      { field: 'injury_time', label: '疼痛持续时间', type: 'radio', required: true,
+        options: [{value:'within_1_week',label:'1周内'},{value:'1_to_2_weeks',label:'1-2周'},{value:'2_to_4_weeks',label:'2-4周'},{value:'over_1_month',label:'超过1个月'}] },
+      { field: 'swelling', label: '是否有肿胀', type: 'radio', required: true,
+        options: [{value:'none',label:'无'},{value:'mild',label:'轻微'},{value:'moderate',label:'中度'},{value:'severe',label:'严重'}] },
+      { field: 'weight_bearing', label: '能否负重行走', type: 'radio', required: true,
+        options: [{value:'can_walk',label:'可以正常行走'},{value:'can_stand',label:'可站立但行走困难'},{value:'cannot_bear',label:'无法负重'}] },
+      { field: 'range_limitation', label: '膝关节活动是否受限', type: 'radio', required: true,
+        options: [{value:'none',label:'无受限'},{value:'mild',label:'轻微受限'},{value:'moderate',label:'明显受限'},{value:'severe',label:'严重受限'}] },
+      { field: 'post_op_status', label: '是否术后', type: 'radio', required: true,
+        options: [{value:'none',label:'非术后'},{value:'approved',label:'术后，已获医生/康复师许可'},{value:'not_approved',label:'术后，未获许可'}] },
+      { field: 'red_flags', label: '是否出现以下情况（可多选）', type: 'checkbox', required: true,
+        options: [{value:'deformity',label:'明显畸形'},{value:'severe_swelling',label:'急性严重肿胀'},{value:'fracture_suspect',label:'疑似骨折/韧带断裂'},{value:'numbness',label:'麻木/无力'},{value:'worsening',label:'疼痛持续加重'},{value:'fever',label:'发热/感染迹象'},{value:'none',label:'以上均无'}] }
+    ]
+  },
+  ankle_sprain: {
+    title: '踝扭伤自查',
+    questions: [
+      { field: 'pain_area', label: '疼痛位置', type: 'checkbox', required: true,
+        options: [{value:'outside',label:'踝外侧'},{value:'inside',label:'踝内侧'},{value:'front',label:'踝前侧'},{value:'back',label:'踝后侧'},{value:'whole',label:'整个脚踝'}] },
+      { field: 'pain_level', label: '疼痛程度（0-10分）', type: 'slider', required: true, min: 0, max: 10, step: 1, minLabel: '无痛', maxLabel: '剧痛' },
+      { field: 'injury_time', label: '扭伤时间', type: 'radio', required: true,
+        options: [{value:'within_24h',label:'24小时内'},{value:'1_to_3_days',label:'1-3天'},{value:'3_to_7_days',label:'3-7天'},{value:'over_1_week',label:'超过1周'}] },
+      { field: 'swelling', label: '肿胀程度', type: 'radio', required: true,
+        options: [{value:'none',label:'无'},{value:'mild',label:'轻微'},{value:'moderate',label:'中度'},{value:'severe',label:'严重'}] },
+      { field: 'bruising', label: '是否有淤青', type: 'radio', required: true,
+        options: [{value:'none',label:'无'},{value:'mild',label:'轻微'},{value:'moderate',label:'明显'},{value:'severe',label:'严重/扩散'}] },
+      { field: 'weight_bearing', label: '能否负重行走', type: 'radio', required: true,
+        options: [{value:'can_walk',label:'可以正常行走'},{value:'can_stand',label:'可站立但行走困难'},{value:'cannot_bear',label:'无法负重/无法走4步'}] },
+      { field: 'recurrent', label: '是否反复扭伤', type: 'radio', required: true,
+        options: [{value:'no',label:'否'},{value:'yes',label:'是'}] },
+      { field: 'post_op_status', label: '是否术后', type: 'radio', required: true,
+        options: [{value:'none',label:'非术后'},{value:'approved',label:'术后，已获医生/康复师许可'},{value:'not_approved',label:'术后，未获许可'}] },
+      { field: 'red_flags', label: '是否出现以下情况（可多选）', type: 'checkbox', required: true,
+        options: [{value:'deformity',label:'明显畸形'},{value:'severe_swelling',label:'急性严重肿胀'},{value:'fracture_suspect',label:'疑似骨折/韧带断裂'},{value:'numbness',label:'麻木/无力'},{value:'worsening',label:'疼痛持续加重'},{value:'none',label:'以上均无'}] }
+    ]
+  }
+};
+
+const EXERCISES = [
+  { exercise_id: 'knee_quad_set', title: '股四头肌等长收缩', body_area: 'knee', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low','medium'], steps: ['仰卧或坐位，伸直膝关节','大腿前侧肌肉主动收紧，将膝盖向床面轻压','保持收缩5秒，然后放松5秒','注意保持正常呼吸，不要憋气'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['轻中度膝痛','可负重人群'], not_suitable_for: ['急性严重肿胀','术后未获许可'], common_mistakes: ['憋气','臀部代偿发力'], stop_conditions: ['疼痛明显加重','出现麻木无力','肿胀增加'], featured: true },
+  { exercise_id: 'knee_heel_slide', title: '跟滑屈膝', body_area: 'knee', category: 'mobility', category_text: '活动度', risk_allowed: ['low','medium'], steps: ['仰卧位，脚跟贴床面','缓慢将脚跟向臀部方向滑动，屈膝','到达舒适最大角度后保持2-3秒','缓慢伸直膝盖，脚跟滑回原位'], sets_reps: '10次/组，2组，每日1-2次', suitable_for: ['膝关节活动度受限'], not_suitable_for: ['急性严重肿胀'], common_mistakes: ['速度过快','超出疼痛范围'], stop_conditions: ['疼痛明显加重','出现卡压感'], featured: true },
+  { exercise_id: 'knee_slr', title: '直腿抬高', body_area: 'knee', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low'], steps: ['仰卧位，患侧腿伸直','收紧大腿前侧肌肉，保持膝盖伸直','将腿抬高约15-20厘米','保持5秒后缓慢放下'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['轻度膝痛'], not_suitable_for: ['中重度疼痛'], common_mistakes: ['屈膝代偿','抬得过高'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'hip_bridge', title: '臀桥', body_area: 'knee', category: 'stability', category_text: '稳定性', risk_allowed: ['low'], steps: ['仰卧位，双膝弯曲，双脚平放','收紧臀部和腹部','将臀部抬起，肩臀膝成一条直线','保持3-5秒后缓慢放下'], sets_reps: '10次/组，2-3组，每日1次', suitable_for: ['轻度膝痛'], not_suitable_for: ['膝痛明显加重时'], common_mistakes: ['腰部过度拱起','膝盖内扣'], stop_conditions: ['膝痛明显加重','腰部不适'], featured: true },
+  { exercise_id: 'ankle_pump', title: '踝泵', body_area: 'ankle', category: 'mobility', category_text: '活动度', risk_allowed: ['low','medium'], steps: ['坐位或仰卧位，腿部放松','缓慢将脚尖向上勾（背屈），保持2秒','再缓慢将脚尖向下踩（跖屈），保持2秒','动作轻柔，在无痛范围内活动'], sets_reps: '15-20次/组，3组，每日多次', suitable_for: ['踝扭伤早期','肿胀消退期'], not_suitable_for: ['急性严重肿胀伴剧痛'], common_mistakes: ['动作过快','只做一个方向'], stop_conditions: ['疼痛明显加重','肿胀增加'], featured: true },
+  { exercise_id: 'ankle_alphabet', title: '踝关节画字母', body_area: 'ankle', category: 'mobility', category_text: '活动度', risk_allowed: ['low'], steps: ['坐位，腿部悬空或脚踝伸出床沿','用脚尖在空中画字母A-Z','动作缓慢、幅度尽量大','保持膝盖不动，只活动脚踝'], sets_reps: '画完A-Z为1组，2-3组，每日1-2次', suitable_for: ['踝关节活动度恢复'], not_suitable_for: ['急性肿胀期'], common_mistakes: ['膝盖跟着动','幅度太小'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'calf_raise_assisted', title: '扶墙提踵', body_area: 'ankle', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low'], steps: ['面对墙站立，双手扶墙保持平衡','双脚与肩同宽','缓慢抬起脚后跟，用脚尖站立','保持2-3秒后缓慢放下'], sets_reps: '10-15次/组，2-3组，每日1次', suitable_for: ['可负重人群'], not_suitable_for: ['无法负重'], common_mistakes: ['借助爆发力','重心不稳'], stop_conditions: ['踝痛明显加重'], featured: true },
+  { exercise_id: 'single_leg_balance_assisted', title: '扶墙单脚站', body_area: 'ankle', category: 'stability', category_text: '稳定性', risk_allowed: ['low'], steps: ['侧身站在墙边，一手扶墙','将重心移到外侧腿','缓慢抬起内侧脚，单脚站立','保持平衡10-30秒，然后换边'], sets_reps: '10-30秒/次，3次/侧，每日1次', suitable_for: ['踝关节稳定性恢复'], not_suitable_for: ['无法单脚负重'], common_mistakes: ['扶墙过度依赖','身体歪斜'], stop_conditions: ['踝痛明显加重'], featured: false }
+];
+
+// ==================== 状态 ====================
+let currentPage = 'pageHome';
+let pageStack = ['pageHome'];
+let currentAssessmentType = '';
+let currentAnswers = {};
+let currentResult = null;
+let filterBodyArea = 'all';
+let activeFilterCategory = 'all';
+
+// ==================== 路由 ====================
+function goToPage(pageId, title) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  pageStack.push(pageId);
+  currentPage = pageId;
+  updateNav(title);
+}
+
+function goBack() {
+  if (pageStack.length <= 1) return;
+  pageStack.pop();
+  const prev = pageStack[pageStack.length - 1];
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(prev).classList.add('active');
+  currentPage = prev;
+  updateNavByPage(prev);
+}
+
+function updateNav(title) {
+  document.getElementById('navBack').classList.toggle('show', pageStack.length > 1);
+  document.getElementById('navTitle').textContent = title || getPageTitle(currentPage);
+}
+
+function updateNavByPage(pageId) {
+  document.getElementById('navBack').classList.toggle('show', pageStack.length > 1);
+  document.getElementById('navTitle').textContent = getPageTitle(pageId);
+}
+
+function getPageTitle(pageId) {
+  const map = {
+    pageHome: '运动康复自查',
+    pagePolicy: '隐私政策',
+    pageAssessment: ASSESSMENT_CONFIGS[currentAssessmentType]?.title || '自查问卷',
+    pageResult: '自查结果',
+    pageExerciseList: '动作库',
+    pageExerciseDetail: '动作详情'
+  };
+  return map[pageId] || '运动康复自查';
+}
+
+// ==================== 首页 ====================
+function renderHomeExercises() {
+  const featured = EXERCISES.filter(e => e.featured).slice(0, 3);
+  const html = featured.map(e => `
+    <div class="exercise-mini" onclick="goToExerciseDetail('${e.exercise_id}')">
+      <div class="exercise-mini-poster">🎬</div>
+      <div>
+        <div class="exercise-mini-title">${e.title}</div>
+        <div style="margin-top:4px;">
+          <span class="tag tag-blue">${e.category_text}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('homeExercises').innerHTML = html;
+}
+
+// ==================== 自查 ====================
+function goToAssessment(type) {
+  currentAssessmentType = type;
+  currentAnswers = {};
+  document.getElementById('assessmentDisclaimer').style.display = 'block';
+  document.getElementById('assessmentQuestions').style.display = 'none';
+  document.getElementById('assessmentSubmit').style.display = 'none';
+  goToPage('pageAssessment', ASSESSMENT_CONFIGS[type].title);
+}
+
+function acceptDisclaimer() {
+  document.getElementById('assessmentDisclaimer').style.display = 'none';
+  document.getElementById('assessmentQuestions').style.display = 'block';
+  document.getElementById('assessmentSubmit').style.display = 'block';
+  renderQuestions();
+}
+
+function renderQuestions() {
+  const config = ASSESSMENT_CONFIGS[currentAssessmentType];
+  const container = document.getElementById('assessmentQuestions');
+  container.innerHTML = config.questions.map((q, i) => {
+    let inputHtml = '';
+    if (q.type === 'radio') {
+      inputHtml = `<div class="radio-group" data-field="${q.field}">
+        ${q.options.map(opt => `
+          <div class="radio-item ${currentAnswers[q.field] === opt.value ? 'selected' : ''}" onclick="selectRadio('${q.field}', '${opt.value}', this)">
+            <input type="radio" name="${q.field}" value="${opt.value}" ${currentAnswers[q.field] === opt.value ? 'checked' : ''}>
+            <span>${opt.label}</span>
+          </div>
+        `).join('')}
+      </div>`;
+    } else if (q.type === 'checkbox') {
+      const vals = currentAnswers[q.field] || [];
+      inputHtml = `<div class="checkbox-group" data-field="${q.field}">
+        ${q.options.map(opt => `
+          <div class="checkbox-item ${vals.includes(opt.value) ? 'selected' : ''}" onclick="toggleCheckbox('${q.field}', '${opt.value}', this)">
+            <input type="checkbox" value="${opt.value}" ${vals.includes(opt.value) ? 'checked' : ''}>
+            <span>${opt.label}</span>
+          </div>
+        `).join('')}
+      </div>`;
+    } else if (q.type === 'slider') {
+      const val = currentAnswers[q.field] !== undefined ? currentAnswers[q.field] : q.min || 0;
+      inputHtml = `<div class="slider-wrap">
+        <div class="slider-value">${val}</div>
+        <input type="range" min="${q.min}" max="${q.max}" step="${q.step}" value="${val}" oninput="updateSlider('${q.field}', this.value, this)">
+        <div class="slider-labels"><span>${q.minLabel}</span><span>${q.maxLabel}</span></div>
+      </div>`;
+    }
+    return `
+      <div class="question-card">
+        <div class="question-label">
+          <span class="question-num">${i + 1}</span>
+          <span>${q.label}</span>
+          ${q.required ? '<span class="question-required">*</span>' : ''}
+        </div>
+        ${inputHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+function selectRadio(field, value, el) {
+  currentAnswers[field] = value;
+  const group = el.closest('.radio-group');
+  group.querySelectorAll('.radio-item').forEach(item => item.classList.remove('selected'));
+  group.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function toggleCheckbox(field, value, el) {
+  let vals = currentAnswers[field] || [];
+  if (vals.includes(value)) {
+    vals = vals.filter(v => v !== value);
+  } else {
+    vals.push(value);
+  }
+  currentAnswers[field] = vals;
+  el.classList.toggle('selected', vals.includes(value));
+  el.querySelector('input').checked = vals.includes(value);
+}
+
+function updateSlider(field, value, el) {
+  currentAnswers[field] = Number(value);
+  el.closest('.slider-wrap').querySelector('.slider-value').textContent = value;
+}
+
+// ==================== 风险计算 ====================
+function calculateRisk() {
+  const a = currentAnswers;
+  const reasons = [];
+
+  // 高风险检查
+  if (a.post_op_status === 'not_approved') reasons.push('术后未获医生/康复师许可');
+  const redFlags = a.red_flags || [];
+  if (!redFlags.includes('none')) {
+    const highFlags = ['deformity','severe_swelling','fracture_suspect','numbness','worsening','fever'];
+    if (highFlags.some(f => redFlags.includes(f))) reasons.push('存在红旗症状');
+  }
+  if (a.weight_bearing === 'cannot_bear') reasons.push('无法负重');
+  if (a.bruising === 'severe') reasons.push('严重淤青/扩散');
+
+  if (reasons.length > 0) return { level: 'high', reasons, summary: '您的情况存在高风险信号，不建议自行练习康复动作。', nextSteps: ['建议尽快就医或联系专业康复师评估','避免负重和剧烈运动'] };
+
+  // 中风险检查
+  const medReasons = [];
+  if ((a.pain_level || 0) >= 5) medReasons.push('疼痛≥5分');
+  if (a.injury_time === 'over_1_month') medReasons.push('疼痛/扭伤持续超过1个月');
+  if (a.swelling === 'moderate') medReasons.push('中度肿胀');
+  if (a.swelling === 'severe') medReasons.push('严重肿胀');
+  if (a.range_limitation === 'moderate') medReasons.push('活动明显受限');
+  if (a.range_limitation === 'severe') medReasons.push('活动严重受限');
+  if (a.recurrent === 'yes') medReasons.push('反复扭伤');
+  if (a.bruising === 'moderate') medReasons.push('明显淤青');
+
+  if (medReasons.length > 0) return { level: 'medium', reasons: medReasons, summary: '您的情况属于中风险，建议线下评估后再进行针对性训练。', nextSteps: ['建议预约线下康复评估','可尝试低强度保守动作','密切观察身体反应'] };
+
+  // 低风险
+  return { level: 'low', reasons: ['未触发中高风险规则'], summary: '您的情况风险较低，可尝试基础康复动作并观察反应。', nextSteps: ['按推荐动作进行练习','练习3-5天观察反应','如疼痛加重请停止并咨询'] };
+}
+
+function getRecommendedExercises(level, bodyArea) {
+  return EXERCISES
+    .filter(e => e.body_area === bodyArea && e.risk_allowed.includes(level))
+    .slice(0, level === 'low' ? 5 : 3);
+}
+
+// ==================== 提交 ====================
+function submitAssessment() {
+  const config = ASSESSMENT_CONFIGS[currentAssessmentType];
+  for (const q of config.questions) {
+    if (q.required) {
+      const val = currentAnswers[q.field];
+      if (val === undefined || val === null || val === '' || (Array.isArray(val) && val.length === 0)) {
+        toast('请补充完整后查看结果');
+        return;
+      }
+    }
+  }
+
+  currentResult = calculateRisk();
+  const bodyArea = currentAssessmentType === 'knee_pain' ? 'knee' : 'ankle';
+  const exercises = currentResult.level !== 'high' ? getRecommendedExercises(currentResult.level, bodyArea) : [];
+
+  renderResult(currentResult, exercises);
+  goToPage('pageResult', '自查结果');
+}
+
+function renderResult(result, exercises) {
+  const levelMap = { low: {text:'低风险',icon:'✅',cls:'risk-low'}, medium: {text:'中风险',icon:'⚠️',cls:'risk-medium'}, high: {text:'高风险',icon:'🚨',cls:'risk-high'} };
+  const style = levelMap[result.level];
+
+  let exercisesHtml = '';
+  if (result.level !== 'high' && exercises.length > 0) {
+    exercisesHtml = `
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">推荐动作</div>
+        <div class="card-subtitle">请根据身体反应谨慎练习，如有不适立即停止</div>
+        <div class="exercise-preview" style="margin-top:12px;">
+          ${exercises.map(e => `
+            <div class="exercise-mini" onclick="goToExerciseDetail('${e.exercise_id}')">
+              <div class="exercise-mini-poster">🎬</div>
+              <div>
+                <div class="exercise-mini-title">${e.title}</div>
+                <div style="margin-top:4px;"><span class="tag tag-blue">${e.category_text}</span></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  } else if (result.level === 'high') {
+    exercisesHtml = `
+      <div class="card warning-card" style="margin-top:12px;">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-title">不建议自行练习</div>
+        <div class="warning-desc">您的情况存在高风险信号，建议优先联系专业人员或及时就医。</div>
+      </div>`;
+  }
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="risk-card ${style.cls}">
+      <div class="risk-badge">${style.icon} ${style.text}</div>
+      <div class="risk-summary">${result.summary}</div>
+      <div class="risk-reasons">
+        <div class="risk-reason-title">触发原因</div>
+        ${result.reasons.map(r => `<div class="risk-reason-item">• ${r}</div>`).join('')}
+      </div>
+      <div class="risk-next-steps" style="margin-top:16px;">
+        <div class="risk-step-title">下一步建议</div>
+        ${result.nextSteps.map((s, i) => `<div class="risk-step-item">${i + 1}. ${s}</div>`).join('')}
+      </div>
+    </div>
+    ${exercisesHtml}
+  `;
+}
+
+function retakeAssessment() {
+  currentAnswers = {};
+  goToAssessment(currentAssessmentType);
+}
+
+function copyResult() {
+  if (!currentResult) return;
+  const typeText = currentAssessmentType === 'knee_pain' ? '膝痛自查' : '踝扭伤自查';
+  const riskText = {low:'低风险',medium:'中风险',high:'高风险'}[currentResult.level];
+  const summary = `【${typeText}结果】\n风险等级：${riskText}\n疼痛程度：${currentAnswers.pain_level || '未填'}/10\n能否负重：${{can_walk:'可以行走',can_stand:'可站立但行走困难',cannot_bear:'无法负重'}[currentAnswers.weight_bearing] || currentAnswers.weight_bearing}\n\n建议：${currentResult.summary}\n\n---\n来自运动康复小程序`;
+  navigator.clipboard?.writeText(summary).then(() => toast('已复制，请发送给康复顾问')).catch(() => toast('复制失败'));
+}
+
+// ==================== 动作库 ====================
+function renderExerciseList() {
+  let list = EXERCISES;
+  if (filterBodyArea !== 'all') list = list.filter(e => e.body_area === filterBodyArea);
+  if (activeFilterCategory !== 'all') list = list.filter(e => e.category === activeFilterCategory);
+
+  const html = list.length > 0 ? list.map(e => `
+    <div class="exercise-card" onclick="goToExerciseDetail('${e.exercise_id}')">
+      <div class="exercise-poster">🎬</div>
+      <div class="exercise-card-right">
+        <div class="exercise-card-title">${e.title}</div>
+        <div class="exercise-card-tags">
+          <span class="tag tag-blue">${e.body_area === 'knee' ? '膝关节' : '踝关节'}</span>
+          <span class="tag" style="background:#EDF2F7;color:#4A5568;">${e.category_text}</span>
+        </div>
+        <div class="exercise-card-risk-text ${e.risk_allowed.includes('high') ? 'danger' : 'safe'}">
+          ${e.risk_allowed.includes('high') ? '需线下评估后使用' : '可自查后练习'}
+        </div>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">暂无匹配动作</div>
+      <div class="empty-desc">可联系康复顾问咨询</div>
+    </div>
+  `;
+  document.getElementById('exerciseList').innerHTML = html;
+}
+
+function filterArea(area, el) {
+  filterBodyArea = area;
+  el.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderExerciseList();
+}
+
+function filterCategory(cat, el) {
+  activeFilterCategory = cat;
+  el.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderExerciseList();
+}
+
+// ==================== 动作详情 ====================
+function goToExerciseDetail(id) {
+  const e = EXERCISES.find(x => x.exercise_id === id);
+  if (!e) return;
+  const html = `
+    <div class="exercise-header" style="margin-bottom:16px;">
+      <div class="exercise-card-title" style="font-size:22px;">${e.title}</div>
+      <div class="exercise-card-tags" style="margin-top:10px;">
+        <span class="tag tag-blue">${e.body_area === 'knee' ? '膝关节' : '踝关节'}</span>
+        <span class="tag" style="background:#EDF2F7;color:#4A5568;">${e.category_text}</span>
+        <span class="tag ${e.risk_allowed.includes('high') ? 'tag-red' : 'tag-green'}">${e.risk_allowed.includes('high') ? '需评估' : '可练习'}</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">动作步骤</div>
+      <div class="steps">${e.steps.map((s,i) => `
+        <div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>
+      `).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">建议频次</div>
+      <div class="section-content">${e.sets_reps}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">✅ 适用人群</div>
+      <div class="tag-list">${e.suitable_for.map(t => `<span class="tag tag-green">${t}</span>`).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">❌ 不适用人群</div>
+      <div class="tag-list">${e.not_suitable_for.map(t => `<span class="tag tag-red">${t}</span>`).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">⚠️ 常见错误</div>
+      <div class="warning-list">${e.common_mistakes.map(m => `<div class="warning-item">${m}</div>`).join('')}</div>
+    </div>
+    <div class="section stop-section">
+      <div class="section-title">🛑 停止条件</div>
+      <div style="font-size:13px;color:#4A5568;margin-bottom:8px;">如练习中出现以下情况，请立即停止：</div>
+      ${e.stop_conditions.map(c => `<div class="stop-item">${c}</div>`).join('')}
+    </div>
+  `;
+  document.getElementById('exerciseDetailCard').innerHTML = html;
+  goToPage('pageExerciseDetail', e.title);
+}
+
+// ==================== 客服弹层 ====================
+function openContactModal(source) {
+  const section = document.getElementById('modalSummarySection');
+  if (currentResult && source === 'result') {
+    const typeText = currentAssessmentType === 'knee_pain' ? '膝痛自查' : '踝扭伤自查';
+    const riskText = {low:'低风险',medium:'中风险',high:'高风险'}[currentResult.level];
+    document.getElementById('modalSummaryText').textContent = `【${typeText}结果】\n风险等级：${riskText}\n疼痛程度：${currentAnswers.pain_level || '未填'}/10\n建议：${currentResult.summary}`;
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+  document.getElementById('contactModal').classList.add('open');
+}
+
+function closeContactModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('contactModal').classList.remove('open');
+}
+
+function copyWechat() {
+  navigator.clipboard?.writeText('rehab_consultant').then(() => toast('微信号已复制')).catch(() => toast('复制失败'));
+}
+
+function copySummaryFromModal() {
+  const text = document.getElementById('modalSummaryText').textContent;
+  navigator.clipboard?.writeText(text).then(() => toast('摘要已复制')).catch(() => toast('复制失败'));
+}
+
+// ==================== Toast ====================
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ==================== 初始化 ====================
+renderHomeExercises();
+renderExerciseList();
+</script>
+</body>
+</html>
