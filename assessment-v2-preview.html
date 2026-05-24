@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运动康复综合评估问卷 V2.0 (优化版)</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --success: #16a34a;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background: var(--gray-50);
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), #1d4ed8);
+    color: white;
+    padding: 40px 24px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  header h1 { font-size: 28px; margin-bottom: 8px; }
+  header p { opacity: 0.9; font-size: 15px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  .badge-success { background: #dcfce7; color: var(--success); }
+  .badge-danger { background: #fee2e2; color: var(--danger); }
+  .badge-warning { background: #fef3c7; color: var(--warning); }
+  .badge-info { background: #dbeafe; color: var(--primary); }
+
+  nav.toc {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+  }
+  nav.toc h3 { font-size: 14px; color: var(--gray-600); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  nav.toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.toc li a {
+    display: block;
+    padding: 6px 14px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--gray-800);
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  nav.toc li a:hover, nav.toc li a.active { background: var(--primary); color: white; }
+
+  section {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  section h2 {
+    font-size: 20px;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  section h3 {
+    font-size: 16px;
+    color: var(--gray-800);
+    margin: 24px 0 12px;
+  }
+  section h4 {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin: 16px 0 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  th {
+    background: var(--gray-50);
+    font-weight: 600;
+    color: var(--gray-600);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  tr:hover td { background: var(--gray-50); }
+
+  .layer-card {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--primary);
+  }
+  .layer-card .layer-code {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    width: 50px;
+    flex-shrink: 0;
+  }
+  .layer-card .layer-name { font-weight: 600; flex: 1; }
+  .layer-card .layer-action { color: var(--gray-600); font-size: 13px; }
+
+  .question-block {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .question-block .q-number {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .question-block .q-text {
+    font-weight: 600;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  .question-block .q-meta {
+    margin-top: 6px;
+    margin-left: 38px;
+    font-size: 12px;
+    color: var(--gray-600);
+  }
+  .question-block .q-options {
+    margin-top: 10px;
+    margin-left: 38px;
+  }
+  .question-block .q-options li {
+    list-style: none;
+    padding: 5px 0;
+    font-size: 13px;
+    color: var(--gray-700);
+  }
+  .question-block .q-options li::before {
+    content: "○";
+    margin-right: 8px;
+    color: var(--gray-400);
+  }
+
+  .alert-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--danger);
+  }
+  .alert-box strong { display: block; margin-bottom: 4px; }
+
+  .alert-critical {
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--primary);
+  }
+
+  .action-card {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--success);
+    font-size: 14px;
+  }
+  .action-card .icon { font-size: 20px; margin-right: 12px; }
+  .action-card .label { font-weight: 600; }
+
+  .check-list {
+    list-style: none;
+    margin: 12px 0;
+  }
+  .check-list li {
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .check-list li::before {
+    content: "✓";
+    color: var(--success);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .code-block {
+    background: var(--gray-900);
+    color: #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  .module-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .tag-a { background: #dbeafe; color: #1d4ed8; }
+  .tag-b { background: #d1fae5; color: #047857; }
+  .tag-c { background: #fee2e2; color: #b91c1c; }
+  .tag-d { background: #fef3c7; color: #b45309; }
+  .tag-e { background: #f3e8ff; color: #7c3aed; }
+  .tag-new { background: #dcfce7; color: #15803d; }
+
+  .new-feature {
+    display: inline-block;
+    padding: 1px 6px;
+    background: #dcfce7;
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .print-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    transition: all 0.2s;
+  }
+  .print-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.4); }
+
+  @media print {
+    body { background: white; }
+    nav.toc { display: none; }
+    section { box-shadow: none; border: 1px solid var(--gray-200); }
+    .print-btn { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    header h1 { font-size: 22px; }
+    section { padding: 20px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🏥 运动康复综合评估问卷 V2.0 (优化版)</h1>
+  <p>7层精细用户分层 · 参考 SPADI / IKDC / ODI / TSK 国际量表 · 肩/膝/腰三部位</p>
+  <p style="margin-top:8px;font-size:13px;opacity:0.8">优化日期：2026-05-21 &nbsp;|&nbsp; 审核状态：<span class="badge badge-success">审核通过</span></p>
+</header>
+
+<nav class="toc">
+  <h3>📑 目录导航</h3>
+  <ul>
+    <li><a href="#overview" class="active">概述</a></li>
+    <li><a href="#changes">优化变更</a></li>
+    <li><a href="#layers">7层分层</a></li>
+    <li><a href="#algorithm">分层算法</a></li>
+    <li><a href="#module-a">模块A·基础信息</a></li>
+    <li><a href="#module-b">模块B·功能评估</a></li>
+    <li><a href="#module-c">模块C·红旗筛查</a></li>
+    <li><a href="#module-d">模块D·目标转化</a></li>
+    <li><a href="#review">审核报告</a></li>
+  </ul>
+</nav>
+
+<section id="overview">
+  <h2>一、设计概述</h2>
+  <p>基于 PRD V1.0（5/22更新）要求，将原有3层风险分级升级为<strong>7层精细用户分层体系</strong>，引入国际标准化功能评估量表，覆盖5个扩展维度。</p>
+
+  <h3>1.1 参考国际量表</h3>
+  <table>
+    <tr><th>部位</th><th>参考量表</th><th>原文献</th><th>采纳维度</th></tr>
+    <tr><td>肩部</td><td>SPADI</td><td>Roach et al., 1991</td><td>疼痛+功能障碍 简化5项</td></tr>
+    <tr><td>膝部</td><td>IKDC</td><td>Irrgang et al., 2001</td><td>症状+运动活动+功能 简化5项</td></tr>
+    <tr><td>腰部</td><td>ODI</td><td>Fairbank et al., 1980</td><td>日常活动受限 简化5项</td></tr>
+    <tr><td>心理</td><td>TSK</td><td>Kori et al., 1990</td><td>恐惧回避信念 简化2项</td></tr>
+  </table>
+
+  <h3>1.2 问卷结构</h3>
+  <table>
+    <tr><th>模块</th><th>题目数</th><th>适用对象</th><th>说明</th></tr>
+    <tr><td><span class="module-tag tag-a">A</span> 基础信息</td><td>4题</td><td>所有用户</td><td>部位+疼痛+时间+机制</td></tr>
+    <tr><td><span class="module-tag tag-b">B</span> 功能评估</td><td>5题/部位</td><td>按部位动态显示</td><td>参考国际PROMs简化</td></tr>
+    <tr><td><span class="module-tag tag-c">C</span> 红旗筛查</td><td>4-5题</td><td>所有用户</td><td>术后+神经+全身+特殊+结构</td></tr>
+    <tr><td><span class="module-tag tag-d">D</span> 目标转化</td><td>4题</td><td>所有用户</td><td>目标+运动水平+时间+付费意愿</td></tr>
+    <tr><td><span class="module-tag tag-e">E</span> 既往病史<span class="new-feature">新增</span></td><td>1题</td><td>所有用户</td><td>糖尿病/骨质疏松/肿瘤等</td></tr>
+    <tr><td><span class="module-tag tag-e">F</span> TSK心理<span class="new-feature">新增</span></td><td>2题</td><td>所有用户</td><td>恐惧回避信念评估</td></tr>
+  </table>
+  <p class="info-box">📊 单部位总计 <strong>20题</strong>，预计完成时间 <strong>4-6分钟</strong></p>
+</section>
+
+<section id="changes">
+  <h2>二、本次优化变更</h2>
+  
+  <h3>2.1 高优先级优化（已实施）</h3>
+  <table>
+    <tr><th>#</th><th>优化项</th><th>变更内容</th><th>状态</th></tr>
+    <tr><td>1</td><td>红旗就医指导</td><td>每个红旗选项增加明确的<code>action</code>字段（如"建议24小时内就医"）</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>2</td><td>C4醒目标题</td><td>腰部特殊红旗标题改为"【🚨 紧急】马尾综合征警示症状"，顶部增加红色警示横幅</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>3</td><td>L4康复机构入口</td><td>L4/L6结果页增加 actionCards：查找附近康复机构 + 预约线上咨询</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>4</td><td>复评提醒</td><td>新增 generateFollowUpReminder 函数，按层级自动设置复评时间（5-14天）</td><td><span class="badge badge-success">已实施</span></td></tr>
+  </table>
+
+  <h3>2.2 中优先级优化（已实施）</h3>
+  <table>
+    <tr><th>#</th><th>优化项</th><th>变更内容</th><th>状态</th></tr>
+    <tr><td>5</td><td>既往病史采集</td><td>新增 medical_history 题目，包含糖尿病/骨质疏松/肿瘤等8个选项</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>6</td><td>术后详细信息</td><td>三个部位均新增 surgery_details 条件题组（手术类型+术后天数）</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>7</td><td>TSK心理评估</td><td>新增 tsk_activity_fear + tsk_pain_avoidance 2题，总分4-20分</td><td><span class="badge badge-success">已实施</span></td></tr>
+  </table>
+</section>
+
+<section id="layers">
+  <h2>三、7层用户分层体系</h2>
+
+  <div class="layer-card" style="border-left-color: var(--success)">
+    <div class="layer-code">L0</div>
+    <div class="layer-name">无症状</div>
+    <div class="layer-action">预防性体态动作 + 体态教育</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #22c55e">
+    <div class="layer-code">L1</div>
+    <div class="layer-name">轻症（急性早期）</div>
+    <div class="layer-action">居家康复 + 观察3-5天</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #84cc16">
+    <div class="layer-code">L2</div>
+    <div class="layer-name">慢性疼痛</div>
+    <div class="layer-action">结构化进阶康复方案</div>
+  </div>
+  <div class="layer-card" style="border-left-color: var(--warning)">
+    <div class="layer-code">L3</div>
+    <div class="layer-name">保守处理适配</div>
+    <div class="layer-action">标准康复动作包</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #f97316">
+    <div class="layer-code">L4</div>
+    <div class="layer-name">专科评估指征</div>
+    <div class="layer-action">建议线下专科评估 + 附近康复机构入口</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #8b5cf6">
+    <div class="layer-code">L5</div>
+    <div class="layer-name">术后康复期</div>
+    <div class="layer-action">术后专用渐进方案（需手术类型+天数）</div>
+  </div>
+  <div class="layer-card" style="border-left-color: var(--danger)">
+    <div class="layer-code">L6</div>
+    <div class="layer-name">高风险排除</div>
+    <div class="layer-action">禁止自行练习，建议立即就医 + 急诊指南</div>
+  </div>
+
+  <h3>3.1 复评提醒策略 <span class="new-feature">新增</span></h3>
+  <table>
+    <tr><th>层级</th><th>复评时间</th><th>提醒内容</th><th>对比指标</th></tr>
+    <tr><td>L0</td><td>不复评</td><td>-</td><td>-</td></tr>
+    <tr><td>L1</td><td>5天后</td><td>建议复评对比功能改善</td><td>疼痛/功能/FPP</td></tr>
+    <tr><td>L2</td><td>14天后</td><td>建议复评追踪康复进度</td><td>疼痛/功能/FPP</td></tr>
+    <tr><td>L3</td><td>14天后</td><td>建议复评对比功能评分变化</td><td>疼痛/功能/FPP</td></tr>
+    <tr><td>L4</td><td>7天后</td><td>建议完成线下评估后再次填写</td><td>疼痛/功能/FPP</td></tr>
+    <tr><td>L5</td><td>14天后</td><td>术后2周复评调整方案</td><td>疼痛/功能/FPP</td></tr>
+    <tr><td>L6</td><td>不复评</td><td>-</td><td>-</td></tr>
+  </table>
+
+  <h3>3.2 结果页行动卡片 <span class="new-feature">新增</span></h3>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">L4和L6结果页底部增加行动卡片，缩短用户转化路径：</p>
+  
+  <div class="action-card" style="border-left-color: var(--warning)">
+    <span class="icon">🏥</span>
+    <span class="label">L4：查找附近康复机构</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--warning)">
+    <span class="icon">📞</span>
+    <span class="label">L4：预约线上咨询</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--danger)">
+    <span class="icon">🏥</span>
+    <span class="label">L6：就医指南</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--danger)">
+    <span class="icon">🚑</span>
+    <span class="label">L6：查找附近医院急诊</span>
+  </div>
+</section>
+
+<section id="algorithm">
+  <h2>四、分层算法（FPP 综合评分）</h2>
+
+  <h3>4.1 算法流程</h3>
+  <div class="code-block">
+Step 1: 硬排除 → L6 高风险
+  → 术后未获许可
+  → 结构性异常：畸形/严重肿胀/无法负重/无法主动抬臂
+  → 腰部特殊红旗：大小便异常/鞍区麻木/进行性无力
+  → 全身警示：发热+体重下降+夜间盗汗
+  → 神经症状：肌无力 + 疼痛≥7分
+
+Step 2: 术后路径 → L5（需采集手术类型+术后天数）
+  → 术后已获许可
+
+Step 3: 计算 FPP (Function-Pain-Phase) 综合得分
+  pain_score = 疼痛程度(0-10)
+  function_score = 功能5项总分/20 × 10 (0-10)
+  duration_weight = { <1周:0.8, 1-2周:0.9, 2-6周:1.0, >6周:1.2, 反复:1.1 }
+  FPP = pain_score × 0.5 + function_score × 0.5 × duration_weight
+
+Step 4: 功能受限等级
+  0-2分: 无受限 | 2-5分: 轻度 | 5-8分: 中度 | 8-10分: 重度
+
+Step 5: 综合分层
+  pain=0 + function=0 → L0
+  FPP≤3 + 时间<2周 → L1
+  FPP≤3 + 时间≥2周 → L2
+  3&lt;FPP≤6 + 受限∈[轻度,中度] → L3
+  FPP>6 或 受限=重度 → L4
+  </div>
+</section>
+
+<section id="module-a">
+  <h2>五、模块A：基础信息（通用，4题）</h2>
+
+  <div class="question-block">
+    <span class="q-number">A1</span>
+    <span class="q-text">请选择您不适的部位（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填</div>
+    <ul class="q-options">
+      <li>肩部</li><li>膝关节</li><li>腰部</li><li>多部位不适</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">A2</span>
+    <span class="q-text">请评估您当前的疼痛程度</span>
+    <div class="q-meta">题型：滑块 0-10 | 必填 | NPRS标准</div>
+    <ul class="q-options"><li>0 = 无痛 → 10 = 剧痛</li></ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">A3</span>
+    <span class="q-text">这种不适持续了多长时间？</span>
+    <div class="q-meta">题型：单选 | 必填 | 时间权重依据</div>
+    <ul class="q-options">
+      <li>不到1周（急性期）<span style="color:var(--gray-400)">— 权重0.8</span></li>
+      <li>1-2周（急性后期）<span style="color:var(--gray-400)">— 权重0.9</span></li>
+      <li>2-6周（亚急性期）<span style="color:var(--gray-400)">— 权重1.0</span></li>
+      <li>超过6周（慢性期）<span style="color:var(--gray-400)">— 权重1.2</span></li>
+      <li>反复发作（时好时坏）<span style="color:var(--gray-400)">— 权重1.1</span></li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">A4</span>
+    <span class="q-text">您的不适是怎么开始的？</span>
+    <div class="q-meta">题型：单选 | 必填 | 扩展维度：机制</div>
+    <ul class="q-options">
+      <li>急性外伤（如摔倒、扭伤、碰撞）</li>
+      <li>过度使用（如长时间重复动作、突然增加运动量）</li>
+      <li>逐渐出现（没有明显诱因，慢慢加重）</li>
+      <li>不明原因</li>
+    </ul>
+  </div>
+</section>
+
+<section id="module-b">
+  <h2>六、模块B：功能评估（按部位动态显示，5题）</h2>
+  <p style="color:var(--gray-600);font-size:13px;margin-bottom:16px;">请根据您最近一周的情况回答。计分：0=无困难 → 4=无法完成</p>
+
+  <h3>🟢 肩部功能评估（参考 SPADI 简化版）</h3>
+  <div class="question-block"><span class="q-number">B-S1</span><span class="q-text">举手过肩取高处物品的难度？</span><div class="q-meta">SPADI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-S2</span><span class="q-text">伸手到背后（如系围裙、拉后背拉链）的难度？</span><div class="q-meta">SPADI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-S3</span><span class="q-text">侧平举提重物（如提购物袋）的难度？</span><div class="q-meta">SPADI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-S4</span><span class="q-text">夜间疼痛对睡眠的影响？</span><div class="q-meta">SPADI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-S5</span><span class="q-text">穿脱上衣/洗头时的困难程度？</span><div class="q-meta">SPADI核心维度</div></div>
+
+  <h3>🔵 膝部功能评估（参考 IKDC 简化版）</h3>
+  <div class="question-block"><span class="q-number">B-K1</span><span class="q-text">上下楼梯的困难程度？</span><div class="q-meta">IKDC核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-K2</span><span class="q-text">蹲下站起的困难程度？</span><div class="q-meta">IKDC核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-K3</span><span class="q-text">连续行走30分钟以上的困难程度？</span><div class="q-meta">IKDC核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-K4</span><span class="q-text">膝关节是否有交锁或打软腿？</span><div class="q-meta">IKDC核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-K5</span><span class="q-text">跑步或跳跃的困难程度？</span><div class="q-meta">IKDC核心维度</div></div>
+
+  <h3>🟣 腰部功能评估（参考 ODI 简化版）</h3>
+  <div class="question-block"><span class="q-number">B-L1</span><span class="q-text">弯腰/提重物的困难程度？</span><div class="q-meta">ODI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-L2</span><span class="q-text">久坐超过1小时的耐受情况？</span><div class="q-meta">ODI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-L3</span><span class="q-text">连续站立/行走30分钟以上的困难程度？</span><div class="q-meta">ODI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-L4</span><span class="q-text">夜间疼痛对睡眠的影响？</span><div class="q-meta">ODI核心维度</div></div>
+  <div class="question-block"><span class="q-number">B-L5</span><span class="q-text">日常活动（穿衣、做家务）的困难程度？</span><div class="q-meta">ODI核心维度</div></div>
+</section>
+
+<section id="module-c">
+  <h2>七、模块C：红旗筛查（4-5题）</h2>
+  <p style="color:var(--danger);font-size:13px;margin-bottom:16px;">⚠️ 以下情况可能提示需要立即就医，请务必如实回答</p>
+
+  <h3>通用红旗（肩/膝/腰均有）</h3>
+
+  <div class="question-block">
+    <span class="q-number">C1</span>
+    <span class="q-text">您是否接受过相关手术？</span>
+    <div class="q-meta">题型：单选 | 必填</div>
+    <ul class="q-options">
+      <li>非术后</li>
+      <li>术后，已获得医生/康复师运动许可</li>
+      <li style="color:var(--danger)">术后，尚未获得运动许可 → <strong>【高风险】</strong>禁止自行练习，请立即联系主刀医生</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">C2</span>
+    <span class="q-text">是否出现以下神经症状？（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填 | 每个选项均有就医指导</div>
+    <ul class="q-options">
+      <li>无</li>
+      <li>麻木或感觉减退 <span style="color:var(--danger)">→ 建议72小时内就医</span></li>
+      <li>刺痛或电击样痛 <span style="color:var(--danger)">→ 建议72小时内就医</span></li>
+      <li>肌肉无力 <span style="color:var(--danger)">→ 【警示】建议24小时内就医</span></li>
+      <li>疼痛放射到四肢 <span style="color:var(--danger)">→ 建议1周内就医</span></li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">C3</span>
+    <span class="q-text">是否出现以下全身症状？（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填 | 肿瘤/感染警示</div>
+    <ul class="q-options">
+      <li>无</li>
+      <li>发热或感染迹象</li>
+      <li>不明原因体重下降</li>
+      <li>夜间盗汗</li>
+      <li>疼痛持续加重，休息不缓解</li>
+    </ul>
+    <div class="alert-box">
+      <strong>⚠️ 肿瘤警示</strong>
+      如同时出现 体重下降 + 夜间盗汗 + 休息不缓解 → 建议就医排查
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">C5</span>
+    <span class="q-text">是否出现以下结构性异常？（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填 | 每个选项均有紧急程度标识</div>
+    <ul class="q-options">
+      <li>无</li>
+      <li style="color:var(--danger)">明显畸形或关节脱位外观 → 【紧急】立即前往急诊/骨科</li>
+      <li style="color:var(--danger)">急性严重肿胀 → 【紧急】建议24小时内就医</li>
+      <li style="color:var(--danger)">无法负重行走/无法主动抬臂 → 【警示】建议24-48小时内就医</li>
+    </ul>
+  </div>
+
+  <h3>腰部特有红旗（仅腰部显示）</h3>
+
+  <div class="alert-critical">
+    🚨 马尾综合征（Cauda Equina Syndrome）是骨科急症，如出现以下任何症状，请立即前往急诊就医！延误治疗可能导致永久性神经损伤。
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">C4</span>
+    <span class="q-text">【🚨 紧急】是否出现以下马尾综合征警示症状？（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填 | <strong style="color:var(--danger)">骨科急症</strong></div>
+    <ul class="q-options">
+      <li>以上均无</li>
+      <li style="color:var(--danger)">大小便异常（失禁或排尿困难）→ 【🚨 马尾综合征】立即前往急诊</li>
+      <li style="color:var(--danger)">会阴/鞍区麻木 → 【🚨 马尾综合征】立即前往急诊</li>
+      <li style="color:var(--danger)">下肢进行性无力 → 【紧急】建议24小时内就医</li>
+      <li>严重外伤后剧痛</li>
+      <li>发热/感染迹象</li>
+    </ul>
+  </div>
+</section>
+
+<section id="module-d">
+  <h2>八、模块D：恢复目标与转化意愿（4题）</h2>
+
+  <div class="question-block">
+    <span class="q-number">D1</span>
+    <span class="q-text">您的主要恢复目标是什么？（可多选）</span>
+    <div class="q-meta">题型：多选 | 必填 | 扩展维度：目标</div>
+    <ul class="q-options">
+      <li>缓解疼痛</li><li>恢复日常生活功能</li><li>回归工作/学习</li>
+      <li>回归运动/健身</li><li>预防再次受伤</li><li>改善体态/姿势</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">D2</span>
+    <span class="q-text">您希望恢复到什么运动水平？</span>
+    <div class="q-meta">题型：单选 | 必填</div>
+    <ul class="q-options">
+      <li>久坐办公，几乎不运动</li><li>日常活动（散步、家务）</li>
+      <li>轻度运动（每周1-2次）</li><li>规律运动（每周3次以上）</li>
+      <li>竞技/高强度运动</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">D3</span>
+    <span class="q-text">您每周愿意投入多少时间进行康复训练？</span>
+    <div class="q-meta">题型：单选 | 必填</div>
+    <ul class="q-options">
+      <li>15分钟以内</li><li>15-30分钟</li><li>30-60分钟</li><li>1小时以上</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">D4</span>
+    <span class="q-text">如果康复方案能有效帮助您恢复，您是否愿意为个性化方案付费？</span>
+    <div class="q-meta">题型：滑块 1-5 | 必填 | 扩展维度：转化意愿</div>
+    <ul class="q-options">
+      <li>1 = 完全不愿意</li><li>2 = 不太愿意</li><li>3 = 看价格决定</li>
+      <li>4 = 比较愿意</li><li>5 = 非常愿意</li>
+    </ul>
+  </div>
+
+  <h3>八（续）、新增模块 <span class="new-feature">NEW</span></h3>
+
+  <div class="question-block">
+    <span class="q-number">E1</span>
+    <span class="q-text">您是否有以下既往病史？（可多选）<span class="new-feature">新增</span></span>
+    <div class="q-meta">题型：多选 | 必填 | 影响康复方案安全性</div>
+    <ul class="q-options">
+      <li>无</li>
+      <li>糖尿病（影响愈合速度）</li>
+      <li>骨质疏松（增加骨折风险）</li>
+      <li>高血压</li>
+      <li>心脏病</li>
+      <li>类风湿关节炎</li>
+      <li>肿瘤病史</li>
+      <li>同一部位既往手术史</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">F1</span>
+    <span class="q-text">您是否认同以下说法？<span class="new-feature">新增</span></span>
+    <div class="q-meta">题型：单选 1-5 | 参考 TSK 恐惧回避信念简版</div>
+    <ul class="q-options">
+      <li><strong>"我的身体已经受伤，所以我应该避免做任何可能使情况恶化的活动"</strong></li>
+      <li>1 = 强烈不认同 → 5 = 强烈认同</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">F2</span>
+    <span class="q-text">您是否认同以下说法？<span class="new-feature">新增</span></span>
+    <div class="q-meta">题型：单选 1-5 | 参考 TSK 恐惧回避信念简版</div>
+    <ul class="q-options">
+      <li><strong>"如果我开始活动/运动，我可能会受伤"</strong></li>
+      <li>1 = 强烈不认同 → 5 = 强烈认同</li>
+    </ul>
+    <div class="info-box">
+      <strong>TSK 评分说明</strong>：总分4-20分，≥13分提示高恐惧回避信念，需结合心理干预。高恐惧回避会显著影响康复效果。
+    </div>
+  </div>
+
+  <h3>八（续）、术后条件题组 <span class="new-feature">NEW</span></h3>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">以下题目仅在用户选择"术后"时显示</p>
+
+  <div class="question-block">
+    <span class="q-number">S1</span>
+    <span class="q-text">手术类型<span class="new-feature">条件显示</span></span>
+    <div class="q-meta">题型：单选 | 条件：post_op_status != 'none'</div>
+    <ul class="q-options">
+      <li>肩袖修复术 / ACL重建术 / 椎间盘切除术（按部位）</li>
+      <li>关节置换术 / 半月板修复 / 脊柱融合术</li>
+      <li>其他</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">S2</span>
+    <span class="q-text">术后天数<span class="new-feature">条件显示</span></span>
+    <div class="q-meta">题型：单选 | 条件：post_op_status != 'none'</div>
+    <ul class="q-options">
+      <li>2周内（早期）</li>
+      <li>2-6周（中期）</li>
+      <li>6-12周（后期）</li>
+      <li>12周以上（进阶期）</li>
+    </ul>
+  </div>
+</section>
+
+<section id="review">
+  <h2>九、审核报告</h2>
+
+  <h3>9.1 综合结论</h3>
+  <p class="info-box" style="font-size:15px;">
+    <strong>审核通过，可进入开发实施阶段。</strong><br>
+    10组边界测试全部通过，红旗症状5大类全覆盖，国际量表核心维度已采纳。
+  </p>
+
+  <h3>9.2 审核项明细</h3>
+  <table>
+    <tr><th>审核项</th><th>结果</th><th>说明</th></tr>
+    <tr><td>JSON 格式正确性</td><td><span class="badge badge-success">通过</span></td><td>4/4 文件均通过语法校验</td></tr>
+    <tr><td>字段完整性</td><td><span class="badge badge-success">通过</span></td><td>所有必要字段均已配置</td></tr>
+    <tr><td>红旗症状覆盖</td><td><span class="badge badge-success">通过</span></td><td>术后/神经/全身/特殊/结构 5大类全覆盖</td></tr>
+    <tr><td>分层算法逻辑</td><td><span class="badge badge-success">通过</span></td><td>10组边界测试全部通过</td></tr>
+    <tr><td>就医指导文案</td><td><span class="badge badge-success">通过</span></td><td>每个红旗选项均有明确action和urgency标识</td></tr>
+    <tr><td>问卷长度控制</td><td><span class="badge badge-success">通过</span></td><td>单部位20题，预计4-6分钟</td></tr>
+    <tr><td>国际量表参考</td><td><span class="badge badge-success">通过</span></td><td>SPADI/IKDC/ODI/TSK 核心维度已采纳</td></tr>
+    <tr><td>转化采集</td><td><span class="badge badge-success">通过</span></td><td>4题覆盖目标/水平/时间/付费意愿</td></tr>
+  </table>
+
+  <h3>9.3 本次优化亮点</h3>
+  <ul class="check-list">
+    <li>每个红旗选项增加明确的就医指导（action字段："建议24小时内就医"）</li>
+    <li>C4腰部红旗增加红色警示横幅，强调马尾综合征的紧急性</li>
+    <li>L4/L6结果页增加行动卡片（附近康复机构/急诊指南）</li>
+    <li>新增复评提醒策略（按层级5-14天自动提醒）</li>
+    <li>新增既往病史采集（糖尿病/骨质疏松/肿瘤等8项）</li>
+    <li>新增术后详细信息（手术类型+术后天数）</li>
+    <li>新增TSK恐惧回避信念2题（心理因素影响康复效果）</li>
+  </ul>
+
+  <h3>9.4 待确认项</h3>
+  <table>
+    <tr><th>事项</th><th>优先级</th></tr>
+    <tr><td>康复专业人员最终审核问卷医学内容</td><td><span class="badge badge-danger">必须</span></td></tr>
+    <tr><td>客服微信号/二维码补充至结果页</td><td><span class="badge badge-warning">高</span></td></tr>
+    <tr><td>视频URL补充（10个动作）</td><td><span class="badge badge-warning">高</span></td></tr>
+    <tr><td>附近康复机构数据来源对接</td><td><span class="badge badge-warning">高</span></td></tr>
+    <tr><td>付费转化方案的具体定价策略</td><td><span class="badge badge-info">中</span></td></tr>
+  </table>
+
+  <div class="alert-box">
+    <strong>⚠️ 免责声明</strong>
+    本问卷不构成医疗诊断，仅用于初步风险评估和康复动作适用性筛查。所有L6（高风险）和L4（专科评估指征）用户均应被告知：建议咨询专业医生或康复治疗师。
+  </div>
+</section>
+
+<footer style="text-align:center;padding:40px 0;color:var(--gray-400);font-size:13px;">
+  <p>运动康复综合评估问卷 V2.0 优化版 | 审核日期：2026-05-21</p>
+  <p style="margin-top:4px;">本问卷不构成医疗诊断，仅用于风险评估和康复动作适用性筛查</p>
+</footer>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ 打印 / 另存为PDF</button>
+
+<script>
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav.toc a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
