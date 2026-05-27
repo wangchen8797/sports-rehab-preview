@@ -1,0 +1,1601 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>运动康复测评问卷</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: radial-gradient(circle at 50% 0%, #ffffff 0, #e8eef7 48%, #dbe5f2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font: inherit; }
+    button { padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; }
+
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #000;
+      border-radius: 48px;
+      padding: 12px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #f8f9fc;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      background: #fff;
+      position: relative;
+      z-index: 5;
+    }
+    .nav-back {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #2B6CB0;
+      display: none;
+    }
+    .nav-back.show { display: block; }
+
+    .page-container {
+      flex: 1;
+      overflow-y: auto;
+      position: relative;
+    }
+    .page-container::-webkit-scrollbar { display: none; }
+
+    .page {
+      display: none;
+      min-height: 100%;
+      padding-bottom: 24px;
+    }
+    .page.active { display: block; }
+
+    /* ===== 通用样式 ===== */
+    .safety-banner {
+      background: #FFFFF0;
+      border-left: 3px solid #D69E2E;
+      padding: 12px 16px;
+      margin: 12px;
+      border-radius: 0 12px 12px 0;
+      font-size: 13px;
+      color: #4A5568;
+      line-height: 1.5;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 0 12px 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .card-title { font-size: 18px; font-weight: 700; color: #1A202C; margin-bottom: 12px; }
+    .card-subtitle { font-size: 14px; color: #718096; line-height: 1.5; margin-bottom: 12px; }
+    .btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      transition: all 0.15s ease;
+    }
+    .btn-primary { background: #2B6CB0; color: #fff; }
+    .btn-primary:active { opacity: 0.85; }
+    .btn-secondary { background: #EDF2F7; color: #2D3748; }
+    .btn-outline { background: transparent; color: #2B6CB0; border: 2px solid #2B6CB0; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tag-green { background: #F0FFF4; color: #38A169; }
+    .tag-red { background: #FFF5F5; color: #E53E3E; }
+    .tag-yellow { background: #FFFFF0; color: #D69E2E; }
+    .tag-blue { background: #EBF8FF; color: #2B6CB0; }
+    .tag-purple { background: #FAF5FF; color: #805AD5; }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .empty-icon { font-size: 50px; margin-bottom: 12px; }
+    .empty-title { font-size: 18px; font-weight: 700; color: #2D3748; margin-bottom: 6px; }
+    .empty-desc { font-size: 14px; color: #A0AEC0; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 100px;
+      transform: translateX(-50%) translateY(20px);
+      background: #1A202C;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      max-width: 300px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .modal-mask {
+      position: fixed;
+      inset: 44px 12px 12px;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      border-radius: 0 0 40px 40px;
+    }
+    .modal-mask.open { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      width: 100%;
+      max-height: 70vh;
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    /* ===== 首页 ===== */
+    .assessment-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 16px;
+      background: #F7FAFC;
+      border-radius: 14px;
+      border-left: 4px solid #2B6CB0;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .assessment-card:active { background: #EDF2F7; transform: scale(0.99); }
+    .assessment-card:last-child { margin-bottom: 0; }
+    .assessment-icon { font-size: 32px; flex-shrink: 0; }
+    .assessment-info { flex: 1; }
+    .assessment-title { font-size: 17px; font-weight: 700; color: #1A202C; }
+    .assessment-subtitle { font-size: 13px; color: #718096; margin-top: 2px; }
+    .assessment-arrow { font-size: 22px; color: #A0AEC0; }
+    .contact-card { background: linear-gradient(135deg, #EBF8FF, #fff); }
+    .contact-title { font-size: 18px; font-weight: 700; color: #1A202C; }
+    .contact-desc { font-size: 14px; color: #4A5568; margin-top: 4px; }
+    .contact-area { margin-top: 8px; }
+    .exercise-preview { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .exercise-mini {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      background: #F7FAFC;
+      border-radius: 12px;
+    }
+    .exercise-mini-poster {
+      width: 70px;
+      height: 52px;
+      border-radius: 10px;
+      background: #EDF2F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .exercise-mini-title { font-size: 15px; font-weight: 700; color: #1A202C; margin-bottom: 4px; }
+    .policy-link { text-align: center; padding: 16px; font-size: 13px; color: #A0AEC0; text-decoration: underline; cursor: pointer; }
+
+    /* ===== 问卷页 ===== */
+    .page-header { padding: 20px; background: #fff; margin-bottom: 12px; }
+    .page-title { font-size: 24px; font-weight: 700; color: #1A202C; }
+    .page-subtitle { font-size: 14px; color: #718096; margin-top: 4px; }
+    .disclaimer-card { text-align: center; }
+    .disclaimer-title { font-size: 20px; font-weight: 700; color: #D69E2E; margin-bottom: 16px; }
+    .disclaimer-content { text-align: left; margin-bottom: 20px; }
+    .disclaimer-content p { margin: 0 0 8px; font-size: 15px; color: #4A5568; line-height: 1.6; }
+    .question-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      margin: 0 12px 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .question-label { font-size: 16px; font-weight: 600; color: #1A202C; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; white-space: pre-wrap; line-height: 1.5; }
+    .question-num { width: 26px; height: 26px; border-radius: 50%; background: #2B6CB0; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .question-required { color: #E53E3E; }
+    .section-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2B6CB0;
+      margin: 0 12px 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #EDF2F7;
+    }
+    .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-item, .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #F7FAFC;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 15px;
+      color: #4A5568;
+    }
+    .radio-item:hover, .checkbox-item:hover { background: #EDF2F7; }
+    .radio-item.selected, .checkbox-item.selected { background: #EBF8FF; border: 2px solid #2B6CB0; }
+    .radio-item input, .checkbox-item input { width: 18px; height: 18px; accent-color: #2B6CB0; }
+    .slider-wrap { padding: 8px 0; }
+    .slider-wrap input[type="range"] { width: 100%; accent-color: #2B6CB0; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 13px; color: #A0AEC0; margin-top: 4px; }
+    .slider-value { font-size: 24px; font-weight: 700; color: #2B6CB0; text-align: center; margin-bottom: 4px; }
+    .submit-area { padding: 12px 12px 24px; }
+    .privacy-modal-title { font-size: 20px; font-weight: 700; color: #1A202C; margin-bottom: 12px; }
+    .privacy-modal-content p { margin: 0 0 8px; font-size: 14px; color: #4A5568; line-height: 1.6; }
+    .privacy-actions { display: flex; gap: 12px; margin-top: 16px; }
+    .privacy-actions .btn { flex: 1; }
+    .progress-bar {
+      height: 4px;
+      background: #EDF2F7;
+      margin: 0 12px 16px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #2B6CB0;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== 结果页 ===== */
+    .risk-card {
+      margin: 12px;
+      padding: 24px 20px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .risk-low .risk-badge { background: #F0FFF4; color: #38A169; }
+    .risk-medium .risk-badge { background: #FFFFF0; color: #D69E2E; }
+    .risk-high .risk-badge { background: #FFF5F5; color: #E53E3E; }
+    .risk-summary { font-size: 15px; color: #4A5568; line-height: 1.6; margin-bottom: 16px; }
+    .risk-reason-title, .risk-step-title { font-size: 14px; font-weight: 700; color: #718096; margin-bottom: 8px; }
+    .risk-reason-item, .risk-step-item { font-size: 14px; color: #4A5568; padding: 4px 0; }
+    .score-card {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #EBF8FF, #F7FAFC);
+      border-radius: 16px;
+      margin-bottom: 16px;
+    }
+    .score-value { font-size: 42px; font-weight: 800; color: #2B6CB0; }
+    .score-label { font-size: 14px; color: #4A5568; margin-top: 4px; }
+    .score-level { font-size: 16px; font-weight: 700; color: #2B6CB0; margin-top: 8px; }
+    .warning-card {
+      text-align: center;
+      padding: 32px 20px;
+      background: #FFF5F5;
+      border: 2px solid rgba(229,62,62,0.08);
+    }
+    .warning-icon { font-size: 44px; margin-bottom: 10px; }
+    .warning-title { font-size: 20px; font-weight: 700; color: #E53E3E; margin-bottom: 8px; }
+    .warning-desc { font-size: 15px; color: #4A5568; line-height: 1.6; }
+    .action-section { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .safety-footer { padding: 16px; text-align: center; font-size: 12px; color: #A0AEC0; }
+
+    /* ===== 动作库 ===== */
+    .filter-bar { background: #fff; padding: 12px 12px; margin-bottom: 8px; }
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4A5568;
+      background: #EDF2F7;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip.active { background: #2B6CB0; color: #fff; }
+    .exercise-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .exercise-card {
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .exercise-card:active { transform: scale(0.99); background: #F7FAFC; }
+    .exercise-poster {
+      width: 90px;
+      height: 68px;
+      border-radius: 10px;
+      background: #EDF2F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .exercise-card-right { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+    .exercise-card-title { font-size: 16px; font-weight: 700; color: #1A202C; }
+    .exercise-card-tags { display: flex; gap: 6px; }
+    .exercise-card-risk-text { font-size: 12px; font-weight: 600; }
+    .exercise-card-risk-text.safe { color: #38A169; }
+    .exercise-card-risk-text.danger { color: #E53E3E; }
+
+    /* ===== 动作详情 ===== */
+    .video-wrap {
+      width: 100%;
+      background: #1A202C;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      position: relative;
+    }
+    .video-placeholder { text-align: center; }
+    .video-placeholder-icon { font-size: 48px; margin-bottom: 8px; }
+    .video-placeholder-text { font-size: 14px; color: #A0AEC0; }
+    .play-btn {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #2B6CB0;
+      cursor: pointer;
+    }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 16px; font-weight: 700; color: #1A202C; margin-bottom: 10px; }
+    .section-content { font-size: 14px; color: #4A5568; line-height: 1.6; }
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+    .step-item { display: flex; gap: 10px; align-items: flex-start; }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #2B6CB0;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text { flex: 1; font-size: 14px; color: #4A5568; line-height: 1.5; padding-top: 2px; }
+    .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .warning-list { display: flex; flex-direction: column; gap: 6px; }
+    .warning-item { font-size: 13px; color: #4A5568; padding: 8px 12px; background: #FFFFF0; border-radius: 8px; }
+    .stop-section { background: #FFF5F5; border-radius: 14px; padding: 16px; margin-bottom: 0; }
+    .stop-section .section-title { color: #E53E3E; }
+    .stop-item { font-size: 14px; color: #E53E3E; font-weight: 600; padding: 4px 0; }
+    .fixed-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      z-index: 50;
+    }
+    .detail-scroll { padding-bottom: 72px; }
+
+    /* ===== 客服弹层 ===== */
+    .contact-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .contact-title { font-size: 18px; font-weight: 700; color: #1A202C; }
+    .contact-close { width: 32px; height: 32px; border-radius: 50%; background: #EDF2F7; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #718096; cursor: pointer; }
+    .qr-section { text-align: center; margin-bottom: 16px; }
+    .qr-placeholder { width: 160px; height: 160px; border-radius: 12px; background: #F7FAFC; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 60px; }
+    .qr-tip { font-size: 13px; color: #A0AEC0; margin-top: 8px; }
+    .wechat-section { text-align: center; padding: 14px; background: #F7FAFC; border-radius: 12px; margin-bottom: 14px; }
+    .wechat-label { font-size: 13px; color: #718096; }
+    .wechat-id { font-size: 22px; font-weight: 700; color: #2B6CB0; font-family: ui-monospace, monospace; margin-top: 4px; }
+    .greeting-section, .summary-section { margin-bottom: 14px; }
+    .greeting-label, .summary-label { font-size: 14px; font-weight: 600; color: #4A5568; margin-bottom: 6px; }
+    .greeting-text, .summary-text { font-size: 13px; color: #4A5568; background: #EBF8FF; padding: 10px 12px; border-radius: 8px; }
+    .summary-text { background: #F7FAFC; max-height: 120px; overflow-y: auto; white-space: pre-wrap; font-size: 12px; }
+    .service-text { font-size: 12px; color: #A0AEC0; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="status-bar">
+        <button class="nav-back" id="navBack" onclick="goBack()">‹</button>
+        <span id="navTitle">运动康复自查</span>
+      </div>
+
+      <div class="page-container" id="pageContainer">
+        <!-- ========== 首页 ========== -->
+        <div class="page active" id="pageHome">
+          <div class="safety-banner">
+            本自查仅用于风险提示和运动建议参考，不能替代医生诊断或线下康复评估。
+          </div>
+          <div class="card">
+            <div class="card-title">选择自查主题</div>
+            <div class="assessment-card" onclick="goToAssessment('shoulder_pain')" style="border-left-color:#3182CE;">
+              <div class="assessment-icon">💪</div>
+              <div class="assessment-info">
+                <div class="assessment-title">肩痛自查</div>
+                <div class="assessment-subtitle">Constant-Murley 肩关节评分</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+            <div class="assessment-card" onclick="goToAssessment('knee_pain')" style="border-left-color:#2B6CB0;">
+              <div class="assessment-icon">🦵</div>
+              <div class="assessment-info">
+                <div class="assessment-title">膝痛自查</div>
+                <div class="assessment-subtitle">LEFS 下肢功能量表</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+            <div class="assessment-card" onclick="goToAssessment('low_back_pain')" style="border-left-color:#38A169;">
+              <div class="assessment-icon">🧍</div>
+              <div class="assessment-info">
+                <div class="assessment-title">腰痛自查</div>
+                <div class="assessment-subtitle">久坐腰酸、弯腰受限</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+            <div class="assessment-card" onclick="goToAssessment('mental_health')" style="border-left-color:#805AD5;">
+              <div class="assessment-icon">🧠</div>
+              <div class="assessment-info">
+                <div class="assessment-title">运动心理测评</div>
+                <div class="assessment-subtitle">运动心理专项测评</div>
+              </div>
+              <div class="assessment-arrow">›</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">康复动作库</div>
+            <div class="card-subtitle">按部位和类别浏览通用康复动作</div>
+            <div class="exercise-preview" id="homeExercises"></div>
+            <button class="btn btn-outline" style="margin-top:14px;" onclick="goToPage('pageExerciseList')">查看全部动作</button>
+          </div>
+          <div class="card contact-card">
+            <div class="contact-title">需要专业评估？</div>
+            <div class="contact-desc">添加康复顾问微信，预约线下评估</div>
+            <div class="contact-area"><span class="tag tag-blue">📍 北京市区五环内</span></div>
+            <button class="btn btn-primary" style="margin-top:14px;" onclick="openContactModal('home')">预约线下评估</button>
+          </div>
+          <div class="policy-link" onclick="goToPage('pagePolicy')">隐私政策与用户协议</div>
+        </div>
+
+        <!-- ========== 隐私政策 ========== -->
+        <div class="page" id="pagePolicy">
+          <div class="card" style="margin-top:12px;">
+            <div class="card-title" style="text-align:center;">隐私政策与用户协议</div>
+            <div style="font-size:14px;color:#4A5568;line-height:1.8;white-space:pre-wrap;">
+<b>隐私政策（占位文本）</b>
+
+最后更新日期：2026年5月
+
+<b>1. 信息收集</b>
+我们收集您在使用自查服务时填写的健康相关信息，以及您主动授权的手机号等联系方式。
+
+<b>2. 信息使用</b>
+您的信息仅用于：
+- 生成自查结果和动作推荐
+- 客服沟通线下评估预约
+- 服务改进和质量监控
+
+<b>3. 信息保护</b>
+我们采用合理的安全措施保护您的个人信息，不会向第三方出售或共享。
+
+<b>4. 用户权利</b>
+您可以随时联系我们删除您的个人信息。
+
+<b>5. 免责声明</b>
+本小程序提供的自查结果仅供参考，不构成医学诊断。
+
+（上线前需替换为正式法务文本）
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== 自查问卷 ========== -->
+        <div class="page" id="pageAssessment">
+          <div class="page-header">
+            <div class="page-title" id="assessmentTitle">自查问卷</div>
+            <div class="page-subtitle" id="assessmentSubtitle">请根据您最近的情况如实填写</div>
+          </div>
+          <div id="assessmentDisclaimer">
+            <div class="card disclaimer-card" style="margin-top:12px;">
+              <div class="disclaimer-title">⚠️ 自查说明</div>
+              <div class="disclaimer-content">
+                <p>本自查仅用于风险提示和运动建议参考，不能替代医生诊断或线下康复评估。</p>
+                <p>如有明显畸形、无法负重、急性严重肿胀等情况，请立即就医。</p>
+              </div>
+              <button class="btn btn-primary" onclick="acceptDisclaimer()">我已了解，开始自查</button>
+            </div>
+          </div>
+          <div id="assessmentProgress" style="display:none;">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div style="text-align:center;font-size:13px;color:#718096;margin-bottom:8px;" id="progressText">0 / 0</div>
+          </div>
+          <div id="assessmentQuestions" style="display:none;"></div>
+          <div id="assessmentSubmit" style="display:none;padding:12px 12px 24px;">
+            <button class="btn btn-primary" onclick="submitAssessment()">查看结果</button>
+          </div>
+        </div>
+
+        <!-- ========== 结果页 ========== -->
+        <div class="page" id="pageResult">
+          <div id="resultContent"></div>
+          <div class="action-section">
+            <button class="btn btn-secondary" onclick="copyResult()">📋 复制自查摘要</button>
+            <button class="btn btn-primary" onclick="openContactModal('result')">💬 添加康复顾问微信</button>
+            <button class="btn btn-outline" onclick="retakeAssessment()">🔄 重新自查</button>
+          </div>
+          <div class="safety-footer">
+            本结果仅为自查风险提示，请结合身体反应谨慎参考。
+          </div>
+        </div>
+
+        <!-- ========== 动作库 ========== -->
+        <div class="page" id="pageExerciseList">
+          <div class="filter-bar">
+            <div class="filter-group">
+              <div class="filter-chip active" onclick="filterArea('all',this)">全部</div>
+              <div class="filter-chip" onclick="filterArea('shoulder',this)">肩部</div>
+              <div class="filter-chip" onclick="filterArea('knee',this)">膝关节</div>
+              <div class="filter-chip" onclick="filterArea('low_back',this)">腰部</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-chip active" onclick="filterCategory('all',this)">全部</div>
+              <div class="filter-chip" onclick="filterCategory('mobility',this)">活动度</div>
+              <div class="filter-chip" onclick="filterCategory('strength_activation',this)">力量激活</div>
+              <div class="filter-chip" onclick="filterCategory('stability',this)">稳定性</div>
+            </div>
+          </div>
+          <div class="exercise-list" id="exerciseList"></div>
+        </div>
+
+        <!-- ========== 动作详情 ========== -->
+        <div class="page" id="pageExerciseDetail">
+          <div class="detail-scroll">
+            <div class="video-wrap">
+              <div class="video-placeholder">
+                <div class="video-placeholder-icon">🎬</div>
+                <div class="video-placeholder-text">视频占位</div>
+              </div>
+              <div class="play-btn">▶</div>
+            </div>
+            <div class="card" id="exerciseDetailCard"></div>
+          </div>
+          <div class="fixed-bottom">
+            <button class="btn btn-primary" onclick="openContactModal('exercise')">💬 咨询康复顾问</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客服弹层 -->
+    <div class="modal-mask" id="contactModal" onclick="closeContactModal(event)">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="contact-header">
+          <div class="contact-title">添加康复顾问微信</div>
+          <div class="contact-close" onclick="closeContactModal()">×</div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-placeholder">📱</div>
+          <div class="qr-tip">长按识别二维码（占位）</div>
+        </div>
+        <div class="wechat-section">
+          <div class="wechat-label">微信号</div>
+          <div class="wechat-id">rehab_consultant</div>
+          <button class="btn btn-outline" style="margin-top:10px;height:40px;font-size:14px;" onclick="copyWechat()">复制微信号</button>
+        </div>
+        <div class="greeting-section">
+          <div class="greeting-label">💬 添加后请发送</div>
+          <div class="greeting-text">自查结果截图或复制内容给客服</div>
+        </div>
+        <div class="summary-section" id="modalSummarySection" style="display:none;">
+          <div class="summary-label">📋 自查摘要</div>
+          <div class="summary-text" id="modalSummaryText"></div>
+          <button class="btn btn-secondary" style="margin-top:10px;height:40px;font-size:14px;" onclick="copySummaryFromModal()">复制摘要</button>
+        </div>
+        <div class="service-text">⏰ 服务时间：工作日 9:00-18:00</div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+<script>
+// ==================== 数据 ====================
+const ASSESSMENT_CONFIGS = {
+  shoulder_pain: {
+    title: '肩痛自查',
+    subtitle: 'Constant-Murley 肩关节评分',
+    questions: [
+      { section: 'A. 疼痛（15分）', field: 'cm_pain', label: '请指出在过去24小时内，您在日常活动中感受到的最严重肩痛程度', type: 'radio', required: true,
+        options: [
+          {value:15,label:'15分 — 完全无痛'},
+          {value:12,label:'12分 — 轻度疼痛，不影响日常活动'},
+          {value:9,label:'9分 — 轻-中度疼痛，日常活动略受影响'},
+          {value:6,label:'6分 — 中度疼痛，部分影响日常活动'},
+          {value:3,label:'3分 — 重度疼痛，严重影响日常活动'},
+          {value:0,label:'0分 — 无法忍受的疼痛'}
+        ]
+      },
+      { section: 'B. 日常生活能力（20分）', field: 'cm_adl_sleep', label: '您的夜间睡眠是否因肩痛而受到干扰？', type: 'radio', required: true,
+        options: [
+          {value:2,label:'2分 — 睡眠正常，肩痛未对正常睡眠造成明显干扰'},
+          {value:1,label:'1分 — 偶尔因肩痛醒来，但能通过调整姿势重新入睡'},
+          {value:0,label:'0分 — 因肩痛难以入睡或无法获得合理的夜间睡眠'}
+        ]
+      },
+      { field: 'cm_adl_work', label: '您的肩部状况对您的工作或日常活动有多大限制？', type: 'radio', required: true,
+        options: [
+          {value:4,label:'4分 — 完全不受限，能完成所有正常工作/日常活动'},
+          {value:3,label:'3分 — 轻度受限，大部分活动不受影响'},
+          {value:2,label:'2分 — 中度受限，部分工作/活动受到影响'},
+          {value:1,label:'1分 — 严重受限，大部分工作/活动难以完成'},
+          {value:0,label:'0分 — 几乎无法完成任何工作/日常活动'}
+        ]
+      },
+      { field: 'cm_adl_leisure', label: '您的肩部状况对您的休闲或体育活动有多大限制？', type: 'radio', required: true,
+        options: [
+          {value:4,label:'4分 — 完全不受限，能参加所有正常的休闲/体育活动'},
+          {value:3,label:'3分 — 轻度受限，大部分活动不受影响'},
+          {value:2,label:'2分 — 中度受限，部分休闲/体育活动受到影响'},
+          {value:1,label:'1分 — 严重受限，大部分活动难以参加'},
+          {value:0,label:'0分 — 几乎无法参加任何休闲/体育活动'}
+        ]
+      },
+      { field: 'cm_adl_reach', label: '在不引起疼痛的情况下，您的手臂能舒适地抬到哪个位置？', type: 'radio', required: true,
+        options: [
+          {value:10,label:'10分 — 超过头顶，能完成所有过顶活动（如取高处物品、梳头等）'},
+          {value:8,label:'8分 — 到达头顶，能触及头顶但无法超过'},
+          {value:6,label:'6分 — 到达颈部，能触及颈部（如梳后面的头发）'},
+          {value:4,label:'4分 — 到达剑突（胸骨下端）'},
+          {value:2,label:'2分 — 到达腰部水平'},
+          {value:0,label:'0分 — 腰部以下，几乎无法主动抬臂'}
+        ]
+      },
+      { section: 'C. 肩关节活动范围（40分）', field: 'cm_rom_flexion', label: '手臂向前上方抬起（肩前屈），您能达到的最大角度约为？（可对着镜子或请他人协助观察）', type: 'radio', required: true,
+        options: [
+          {value:10,label:'10分 — 151° ~ 180°（能完全上举，手臂贴近耳朵）'},
+          {value:8,label:'8分 — 121° ~ 150°（能举到接近垂直）'},
+          {value:6,label:'6分 — 91° ~ 120°（能举到斜上方）'},
+          {value:4,label:'4分 — 61° ~ 90°（能举到与肩同高或略高）'},
+          {value:2,label:'2分 — 31° ~ 60°（能举到腰部以上、肩部以下）'},
+          {value:0,label:'0分 — 0° ~ 30°（几乎无法抬起）'}
+        ]
+      },
+      { field: 'cm_rom_abduction', label: '手臂向身体侧方抬起（肩外展），您能达到的最大角度约为？', type: 'radio', required: true,
+        options: [
+          {value:10,label:'10分 — 151° ~ 180°'},
+          {value:8,label:'8分 — 121° ~ 150°'},
+          {value:6,label:'6分 — 91° ~ 120°'},
+          {value:4,label:'4分 — 61° ~ 90°'},
+          {value:2,label:'2分 — 31° ~ 60°'},
+          {value:0,label:'0分 — 0° ~ 30°'}
+        ]
+      },
+      { field: 'cm_rom_external', label: '请尝试以下5个动作，在不引起疼痛的情况下能完成几个？（每个动作成功得2分）', type: 'radio', required: true,
+        desc: '5个动作分别为：①手放于头后，肘部向前；②手放于头后，肘部向侧方/后方；③手放于头顶，肘部向前；④手放于头顶，肘部向侧方/后方；⑤手从头顶完全抬起（不触碰头部）。每个动作必须能独立完成且不引起疼痛才能得分。',
+        options: [
+          {value:10,label:'10分 — 能完成全部5个动作'},
+          {value:8,label:'8分 — 能完成4个动作'},
+          {value:6,label:'6分 — 能完成3个动作'},
+          {value:4,label:'4分 — 能完成2个动作'},
+          {value:2,label:'2分 — 能完成1个动作'},
+          {value:0,label:'0分 — 均无法完成'}
+        ]
+      },
+      { field: 'cm_rom_internal', label: '将患侧手从大腿外侧开始，沿着脊柱向上移动（拇指作为指示点），拇指能触及的最高位置是？', type: 'radio', required: true,
+        options: [
+          {value:10,label:'10分 — 肩胛间区（两侧肩胛骨之间，T7及以上）'},
+          {value:8,label:'8分 — 第12胸椎水平（胸部与腰部交界处）'},
+          {value:6,label:'6分 — 腰部（L3棘突水平）'},
+          {value:4,label:'4分 — 腰骶关节（腰椎与骶骨连接处）'},
+          {value:2,label:'2分 — 臀部（臀肌区域）'},
+          {value:0,label:'0分 — 大腿外侧（无法将手放到背后）'}
+        ]
+      },
+      { section: 'D. 肌力（25分）', field: 'cm_strength', label: '将手臂向侧方抬到与肩同高，请他人或自己用手向下轻压您的手腕，您能维持该位置抗阻约5秒的力量如何？', type: 'radio', required: true,
+        options: [
+          {value:25,label:'25分 — 正常力量，能轻松对抗较大阻力，与健侧基本一致'},
+          {value:20,label:'20分 — 轻度减弱，能对抗中等阻力但力量略差于健侧'},
+          {value:15,label:'15分 — 中度减弱，只能对抗较小阻力'},
+          {value:10,label:'10分 — 明显减弱，几乎无法对抗阻力，手臂容易下落'},
+          {value:5,label:'5分 — 非常弱，手臂难以维持在侧平举位置'},
+          {value:0,label:'0分 — 完全无力，无法将手臂抬到侧平举位置'}
+        ]
+      },
+      { section: 'E. 肩部运动功能专项（不计入 CMS 总分）', field: 'sport_overhead', label: '篮球/排球类过顶动作（投篮、扣球、发球、抓高处物品）的困难程度？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'无困难，可正常完成'},
+          {value:1,label:'轻度困难，投篮/扣球时略有不适'},
+          {value:2,label:'明显困难，需减小幅度或改用另一只手'},
+          {value:3,label:'严重困难，几乎无法完成过顶动作'}
+        ]
+      },
+      { field: 'sport_push_pull', label: '健身推举/俯卧撑类推压动作（杠铃推举、俯卧撑、卧推）的困难程度？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'无困难，可正常完成'},
+          {value:1,label:'轻度困难，需减轻重量或改为跪姿俯卧撑'},
+          {value:2,label:'明显困难，只能做很轻的推举或 wall push-up'},
+          {value:3,label:'严重困难，几乎无法完成任何推压动作'}
+        ]
+      },
+      { field: 'sport_swing', label: '羽毛球/乒乓球/网球挥拍动作（杀球、扣杀、正手抽球）的困难程度？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'无困难，可正常挥拍'},
+          {value:1,label:'轻度困难，大力击球时略有不适'},
+          {value:2,label:'明显困难，需减小挥拍幅度或避免杀球'},
+          {value:3,label:'严重困难，几乎无法挥拍'}
+        ]
+      },
+      { field: 'sport_support', label: '游泳划水动作（自由泳划臂、蛙泳划水、蝶泳）的困难程度？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'无困难，可正常游泳'},
+          {value:1,label:'轻度困难，长距离游泳后肩部酸胀'},
+          {value:2,label:'明显困难，只能改游蛙泳腿或短距离'},
+          {value:3,label:'严重困难，几乎无法游泳'}
+        ]
+      },
+      { field: 'sport_carry', label: '日常提重物/背包/抱小孩（买菜、背双肩包、抱孩子）的困难程度？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'无困难，可正常负重'},
+          {value:1,label:'轻度困难，需减少负重或换另一侧'},
+          {value:2,label:'明显困难，只能提很轻的物品'},
+          {value:3,label:'严重困难，几乎无法提任何重物'}
+        ]
+      },
+      { field: 'sport_stability', label: '肩关节稳定性感受（是否感觉松动、不稳或即将脱位）？', type: 'radio', required: true,
+        options: [
+          {value:0,label:'关节稳定，无异常感受'},
+          {value:1,label:'偶尔感觉轻微松动，但不影响日常活动'},
+          {value:2,label:'某些动作（如突然举手）会感觉不稳，有恐惧感'},
+          {value:3,label:'明显不稳，担心关节会脱位'}
+        ]
+      },
+      { section: 'F. 病程与筛查', field: 'injury_time', label: '疼痛开始至今有多长时间？', type: 'radio', required: true,
+        options: [
+          {value:'within_1_week',label:'1周内（急性早期）'},
+          {value:'1_to_2_weeks',label:'1-2周（急性期）'},
+          {value:'2_to_4_weeks',label:'2-4周（亚急性期）'},
+          {value:'over_1_month',label:'超过1个月（慢性期）'}
+        ]
+      },
+      { field: 'red_flags', label: '是否出现以下情况（可多选）', type: 'checkbox', required: true,
+        options: [
+          {value:'deformity',label:'明显畸形'},
+          {value:'severe_swelling',label:'严重肿胀'},
+          {value:'numbness',label:'麻木/无力'},
+          {value:'worsening',label:'疼痛持续加重'},
+          {value:'fever',label:'发热'},
+          {value:'none',label:'以上均无'}
+        ]
+      },
+      { field: 'post_op_status', label: '是否术后', type: 'radio', required: true,
+        options: [
+          {value:'none',label:'非术后'},
+          {value:'approved',label:'术后，已获医生/康复师许可'},
+          {value:'not_approved',label:'术后，未获许可'}
+        ]
+      }
+    ]
+  },
+  knee_pain: {
+    title: '膝痛自查',
+    subtitle: 'KOOS 膝关节损伤与骨关节炎结果评分（精简版）',
+    questions: [
+      { section: 'A. 症状维度（回忆期：过去一周）', field: 'koos_s1', label: '您的膝关节有肿胀吗？', type: 'radio', required: true,
+        options: [{value:0,label:'从不'},{value:1,label:'很少'},{value:2,label:'有时'},{value:3,label:'经常'},{value:4,label:'总是'}]
+      },
+      { field: 'koos_s2', label: '您的膝关节在活动时是否会卡住或挂住？', type: 'radio', required: true,
+        options: [{value:0,label:'从不'},{value:1,label:'很少'},{value:2,label:'有时'},{value:3,label:'经常'},{value:4,label:'总是'}]
+      },
+      { field: 'koos_s6', label: '早晨醒来后，您膝关节僵硬的严重程度如何？', type: 'radio', required: true,
+        options: [{value:0,label:'无'},{value:1,label:'轻度'},{value:2,label:'中度'},{value:3,label:'重度'},{value:4,label:'极重度'}]
+      },
+      { section: 'B. 疼痛维度（回忆期：过去一周）', field: 'koos_p1', label: '您多久会经历一次膝关节疼痛？', type: 'radio', required: true,
+        options: [{value:0,label:'从不'},{value:1,label:'每月'},{value:2,label:'每周'},{value:3,label:'每天'},{value:4,label:'总是'}]
+      },
+      { field: 'koos_p5', label: '过去一周，在平坦路面上行走时，您感受到的疼痛程度如何？', type: 'radio', required: true,
+        options: [{value:0,label:'无'},{value:1,label:'轻度'},{value:2,label:'中度'},{value:3,label:'重度'},{value:4,label:'极重度'}]
+      },
+      { field: 'koos_p6', label: '过去一周，在上楼梯或下楼梯时，您感受到的疼痛程度如何？', type: 'radio', required: true,
+        options: [{value:0,label:'无'},{value:1,label:'轻度'},{value:2,label:'中度'},{value:3,label:'重度'},{value:4,label:'极重度'}]
+      },
+      { field: 'koos_p7', label: '过去一周，夜间躺在床上时，您感受到的疼痛程度如何？', type: 'radio', required: true,
+        options: [{value:0,label:'无'},{value:1,label:'轻度'},{value:2,label:'中度'},{value:3,label:'重度'},{value:4,label:'极重度'}]
+      },
+      { section: 'C. 日常生活功能（回忆期：过去一周）', field: 'koos_a1', label: '下楼梯时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_a2', label: '上楼梯时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_a3', label: '从座位上起身时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_a5', label: '弯腰到地面/捡起物品时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_a9', label: '穿袜子/长袜时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_a15', label: '上厕所（坐下/起身）时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { section: 'D. 运动/休闲功能', field: 'koos_sp1', label: '蹲下时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { field: 'koos_sp2', label: '跑步时，膝关节问题带来的困难程度？', type: 'radio', required: true,
+        options: [{value:0,label:'无困难'},{value:1,label:'轻度困难'},{value:2,label:'中度困难'},{value:3,label:'重度困难'},{value:4,label:'极重度困难'}]
+      },
+      { section: 'E. 生活质量', field: 'koos_q1', label: '您多久会意识到自己的膝关节问题？', type: 'radio', required: true,
+        options: [{value:0,label:'从不'},{value:1,label:'很少'},{value:2,label:'有时'},{value:3,label:'经常'},{value:4,label:'总是'}]
+      },
+      { field: 'koos_q3', label: '您对自己膝关节缺乏信心的程度有多严重？', type: 'radio', required: true,
+        options: [{value:0,label:'完全没有'},{value:1,label:'轻度'},{value:2,label:'中度'},{value:3,label:'重度'},{value:4,label:'极重度'}]
+      },
+      { section: 'F. 病程与筛查', field: 'injury_time', label: '疼痛开始至今有多长时间？', type: 'radio', required: true,
+        options: [
+          {value:'within_1_week',label:'1周内（急性早期）'},
+          {value:'1_to_2_weeks',label:'1-2周（急性期）'},
+          {value:'2_to_4_weeks',label:'2-4周（亚急性期）'},
+          {value:'over_1_month',label:'超过1个月（慢性期）'}
+        ]
+      },
+      { field: 'red_flags', label: '是否出现以下情况（可多选）', type: 'checkbox', required: true,
+        options: [
+          {value:'deformity',label:'明显畸形'},
+          {value:'severe_swelling',label:'急性严重肿胀'},
+          {value:'numbness',label:'麻木/无力'},
+          {value:'worsening',label:'疼痛持续加重'},
+          {value:'fever',label:'发热/感染迹象'},
+          {value:'none',label:'以上均无'}
+        ]
+      },
+      { field: 'post_op_status', label: '是否术后', type: 'radio', required: true,
+        options: [
+          {value:'none',label:'非术后'},
+          {value:'approved',label:'术后，已获医生/康复师许可'},
+          {value:'not_approved',label:'术后，未获许可'}
+        ]
+      }
+    ]
+  },
+  low_back_pain: {
+    title: '腰痛自查',
+    subtitle: '请根据您最近的情况如实填写',
+    questions: [
+      { field: 'pain_area', label: '疼痛位置', type: 'checkbox', required: true,
+        options: [{value:'center',label:'腰部正中'},{value:'one_side',label:'一侧'},{value:'lumbosacral',label:'腰骶部'},{value:'buttock',label:'臀部'},{value:'diffuse',label:'弥漫性'}] },
+      { field: 'pain_level', label: '疼痛程度（0-10分）', type: 'slider', required: true, min: 0, max: 10, step: 1, minLabel: '无痛', maxLabel: '剧痛' },
+      { field: 'injury_time', label: '疼痛开始至今有多长时间？', type: 'radio', required: true,
+        options: [{value:'within_1_week',label:'1周内（急性早期）'},{value:'1_to_2_weeks',label:'1-2周（急性期）'},{value:'2_to_4_weeks',label:'2-4周（亚急性期）'},{value:'over_1_month',label:'超过1个月（慢性期）'}] },
+      { field: 'leg_radiation', label: '是否有下肢放射痛', type: 'radio', required: true,
+        options: [{value:'none',label:'无'},{value:'mild',label:'轻微'},{value:'moderate',label:'明显'},{value:'severe',label:'严重'}] },
+      { field: 'bending_limitation', label: '弯腰是否受限', type: 'radio', required: true,
+        options: [{value:'none',label:'无受限'},{value:'mild',label:'轻微受限'},{value:'moderate',label:'明显受限'},{value:'severe',label:'严重受限'}] },
+      { field: 'sitting_aggravation', label: '久坐是否加重', type: 'radio', required: true,
+        options: [{value:'no',label:'否'},{value:'yes',label:'是'}] },
+      { field: 'post_op_status', label: '是否术后', type: 'radio', required: true,
+        options: [{value:'none',label:'非术后'},{value:'approved',label:'术后，已获医生/康复师许可'},{value:'not_approved',label:'术后，未获许可'}] },
+      { field: 'red_flags', label: '是否出现以下情况（可多选）', type: 'checkbox', required: true,
+        options: [{value:'bowel_bladder',label:'大小便异常'},{value:'perineal_numbness',label:'会阴麻木'},{value:'leg_weakness',label:'下肢进行性无力'},{value:'severe_trauma',label:'严重外伤'},{value:'fever',label:'发热'},{value:'worsening',label:'疼痛持续加重'},{value:'none',label:'以上均无'}] }
+    ]
+  },
+  mental_health: {
+    title: '运动心理测评',
+    subtitle: '运动人群心理状态专项评估',
+    questions: [
+      { section: '运动心理专项', desc: '过去两周，您有多频繁受到以下问题的困扰？',
+        field: 'sp_1', label: '1. 因目前伤病无法训练/比赛让我感到焦虑或烦躁', type: 'radio', required: true,
+        options: [
+          {value:0,label:'完全不会（0分）'},
+          {value:1,label:'好几天（1分）'},
+          {value:2,label:'一半以上的天数（2分）'},
+          {value:3,label:'几乎每天（3分）'}
+        ]
+      },
+      { field: 'sp_2', label: '2. 我担心这次伤病会影响我恢复到之前的运动水平', type: 'radio', required: true, sp: true },
+      { field: 'sp_3', label: '3. 想到要重返赛场/恢复训练，我感到害怕或不确定', type: 'radio', required: true, sp: true },
+      { field: 'sp_4', label: '4. 停止日常训练让我的情绪比平时更低落', type: 'radio', required: true, sp: true },
+      { field: 'sp_5', label: '5. 我时常过度担心身体同一部位会再次受伤', type: 'radio', required: true, sp: true },
+      { field: 'sp_6', label: '6. 伤病让我对完成 previously 熟悉的运动动作失去了信心', type: 'radio', required: true, sp: true }
+    ]
+  }
+};
+
+// 为 knee/mental 补齐共享选项模板
+const LEFS_OPTIONS = [
+  {value:0,label:'极度困难或无法完成（0分）'},
+  {value:1,label:'相当困难（1分）'},
+  {value:2,label:'中等困难（2分）'},
+  {value:3,label:'轻微困难（3分）'},
+  {value:4,label:'无困难（4分）'}
+];
+const SP_OPTIONS = [
+  {value:0,label:'完全不会（0分）'},
+  {value:1,label:'好几天（1分）'},
+  {value:2,label:'一半以上的天数（2分）'},
+  {value:3,label:'几乎每天（3分）'}
+];
+
+// 补齐 knee_pain 中标记 lefs:true 的问题选项
+ASSESSMENT_CONFIGS.knee_pain.questions.forEach(q => {
+  if (q.lefs) q.options = LEFS_OPTIONS;
+});
+// 补齐 mental_health 中标记 sp 的问题选项
+ASSESSMENT_CONFIGS.mental_health.questions.forEach(q => {
+  if (q.sp) q.options = SP_OPTIONS;
+});
+
+const EXERCISES = [
+  { exercise_id: 'shoulder_scapular_retraction', title: '肩胛后缩', body_area: 'shoulder', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low','medium'], steps: ['坐位或站位，双臂自然下垂','双肩向后下方轻轻收紧，感受肩胛骨靠拢','保持收缩5秒，然后放松','注意避免耸肩或过度挺胸'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['肩前侧疼痛','久坐肩颈紧张'], not_suitable_for: ['急性肩袖撕裂','术后未获许可'], common_mistakes: ['耸肩代偿','过度挺胸','憋气'], stop_conditions: ['疼痛明显加重','出现麻木无力'], featured: true },
+  { exercise_id: 'shoulder_wall_slide', title: '墙面滑手', body_area: 'shoulder', category: 'mobility', category_text: '活动度', risk_allowed: ['low','medium'], steps: ['背靠墙站立，双臂屈肘贴墙，呈W形','缓慢向上滑动双臂，保持手肘和手腕贴墙','到达舒适最大角度后保持2-3秒','缓慢滑回原位，在无痛范围内完成'], sets_reps: '10次/组，2组，每日1-2次', suitable_for: ['肩关节活动度受限','肩峰撞击'], not_suitable_for: ['急性肩袖损伤'], common_mistakes: ['腰部离墙','手肘未贴墙'], stop_conditions: ['疼痛明显加重'], featured: true },
+  { exercise_id: 'shoulder_isometric_abduction', title: '肩外展等长收缩', body_area: 'shoulder', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low','medium'], steps: ['站立位，患侧手臂贴于身体侧面','手臂外侧轻抵墙面或门框，向外发力但保持手臂不动','保持收缩5-10秒，然后放松','注意保持正常呼吸'], sets_reps: '5-10秒/次，10次/组，2组，每日1次', suitable_for: ['肩袖轻度损伤','早期力量恢复'], not_suitable_for: ['术后未获许可'], common_mistakes: ['用力过猛','身体倾斜代偿'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'shoulder_external_rotation', title: '弹力带外旋', body_area: 'shoulder', category: 'stability', category_text: '稳定性', risk_allowed: ['low'], steps: ['肘关节屈曲90度，上臂紧贴身体','握住弹力带，前臂向外旋转，拉开弹力带','保持2秒后缓慢回到起始位','注意保持上臂不动，仅前臂旋转'], sets_reps: '10-15次/组，2-3组，每日1次', suitable_for: ['肩袖稳定性训练','肩峰下疼痛'], not_suitable_for: ['中重度疼痛','术后未获许可'], common_mistakes: ['上臂离开身体','借用躯干旋转'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'knee_quad_set', title: '股四头肌等长收缩', body_area: 'knee', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low','medium'], steps: ['仰卧或坐位，伸直膝关节','大腿前侧肌肉主动收紧，将膝盖向床面轻压','保持收缩5秒，然后放松5秒','注意保持正常呼吸，不要憋气'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['轻中度膝痛','可负重人群'], not_suitable_for: ['急性严重肿胀','术后未获许可'], common_mistakes: ['憋气','臀部代偿发力'], stop_conditions: ['疼痛明显加重','出现麻木无力','肿胀增加'], featured: true },
+  { exercise_id: 'knee_slr', title: '直腿抬高', body_area: 'knee', category: 'strength_activation', category_text: '力量激活', risk_allowed: ['low'], steps: ['仰卧位，患侧腿伸直','收紧大腿前侧肌肉，保持膝盖伸直','将腿抬高约15-20厘米','保持5秒后缓慢放下'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['轻度膝痛'], not_suitable_for: ['中重度疼痛'], common_mistakes: ['屈膝代偿','抬得过高'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'knee_heel_slide', title: '跟滑屈膝', body_area: 'knee', category: 'mobility', category_text: '活动度', risk_allowed: ['low','medium'], steps: ['仰卧位，脚跟贴床面','缓慢将脚跟向臀部方向滑动，屈膝','到达舒适最大角度后保持2-3秒','缓慢伸直膝盖，脚跟滑回原位'], sets_reps: '10次/组，2组，每日1-2次', suitable_for: ['膝关节活动度受限'], not_suitable_for: ['急性严重肿胀'], common_mistakes: ['速度过快','超出疼痛范围'], stop_conditions: ['疼痛明显加重','出现卡压感'], featured: true },
+  { exercise_id: 'lumbar_pelvic_tilt', title: '骨盆后倾', body_area: 'low_back', category: 'mobility', category_text: '活动度', risk_allowed: ['low','medium'], steps: ['仰卧位，双膝弯曲，双脚平放','收紧腹部，将腰部向床面轻压，使骨盆后倾','保持5秒后放松','注意动作轻柔，不要屏气'], sets_reps: '10次/组，2-3组，每日1-2次', suitable_for: ['久坐腰酸','腰椎曲度过大'], not_suitable_for: ['急性腰椎间盘脱出','术后未获许可'], common_mistakes: ['臀部抬离床面','憋气'], stop_conditions: ['疼痛明显加重','下肢麻木'], featured: true },
+  { exercise_id: 'lumbar_bracing', title: '腹内压基础激活', body_area: 'low_back', category: 'stability', category_text: '稳定性', risk_allowed: ['low','medium'], steps: ['仰卧位或四足位，自然呼吸','缓慢呼气时，轻轻收紧腹部，像系腰带一样环绕腰腹','保持轻柔张力5-10秒','注意保持正常呼吸，不要过度鼓肚子或吸肚子'], sets_reps: '5-10秒/次，10次/组，2-3组，每日1次', suitable_for: ['核心稳定性不足','慢性腰痛'], not_suitable_for: ['术后未获许可'], common_mistakes: ['憋气','过度鼓肚子','腰部代偿发力'], stop_conditions: ['疼痛明显加重'], featured: false },
+  { exercise_id: 'bird_dog_modified', title: '简化鸟狗', body_area: 'low_back', category: 'stability', category_text: '稳定性', risk_allowed: ['low'], steps: ['四足跪位，双手在肩下，双膝在髋下','保持背部平直，收紧核心','缓慢抬起一侧手臂向前伸展，保持平衡','保持5秒后换边，可先从抬手开始，再尝试抬腿'], sets_reps: '5-10秒/侧，6-8次/组，2组，每日1次', suitable_for: ['核心稳定性训练','慢性腰痛'], not_suitable_for: ['急性腰痛发作','无法保持平衡'], common_mistakes: ['腰部塌陷或拱起','身体旋转'], stop_conditions: ['疼痛明显加重','失去平衡'], featured: true }
+];
+
+// ==================== 状态 ====================
+let currentPage = 'pageHome';
+let pageStack = ['pageHome'];
+let currentAssessmentType = '';
+let currentAnswers = {};
+let currentResult = null;
+let filterBodyArea = 'all';
+let activeFilterCategory = 'all';
+
+// ==================== 路由 ====================
+function goToPage(pageId, title) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  pageStack.push(pageId);
+  currentPage = pageId;
+  updateNav(title);
+}
+
+function goBack() {
+  if (pageStack.length <= 1) return;
+  pageStack.pop();
+  const prev = pageStack[pageStack.length - 1];
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(prev).classList.add('active');
+  currentPage = prev;
+  updateNavByPage(prev);
+}
+
+function updateNav(title) {
+  document.getElementById('navBack').classList.toggle('show', pageStack.length > 1);
+  document.getElementById('navTitle').textContent = title || getPageTitle(currentPage);
+}
+
+function updateNavByPage(pageId) {
+  document.getElementById('navBack').classList.toggle('show', pageStack.length > 1);
+  document.getElementById('navTitle').textContent = getPageTitle(pageId);
+}
+
+function getPageTitle(pageId) {
+  const map = {
+    pageHome: '运动康复自查',
+    pagePolicy: '隐私政策',
+    pageAssessment: ASSESSMENT_CONFIGS[currentAssessmentType]?.title || '自查问卷',
+    pageResult: '自查结果',
+    pageExerciseList: '动作库',
+    pageExerciseDetail: '动作详情'
+  };
+  return map[pageId] || '运动康复自查';
+}
+
+// ==================== 首页 ====================
+function renderHomeExercises() {
+  const featured = EXERCISES.filter(e => e.featured).slice(0, 3);
+  const html = featured.map(e => `
+    <div class="exercise-mini" onclick="goToExerciseDetail('${e.exercise_id}')">
+      <div class="exercise-mini-poster">🎬</div>
+      <div>
+        <div class="exercise-mini-title">${e.title}</div>
+        <div style="margin-top:4px;">
+          <span class="tag tag-blue">${e.category_text}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('homeExercises').innerHTML = html;
+}
+
+// ==================== 自查 ====================
+function goToAssessment(type) {
+  currentAssessmentType = type;
+  currentAnswers = {};
+  document.getElementById('assessmentDisclaimer').style.display = 'block';
+  document.getElementById('assessmentProgress').style.display = 'none';
+  document.getElementById('assessmentQuestions').style.display = 'none';
+  document.getElementById('assessmentSubmit').style.display = 'none';
+  const config = ASSESSMENT_CONFIGS[type];
+  document.getElementById('assessmentTitle').textContent = config.title;
+  document.getElementById('assessmentSubtitle').textContent = config.subtitle || '请根据您最近的情况如实填写';
+  goToPage('pageAssessment', config.title);
+}
+
+function acceptDisclaimer() {
+  document.getElementById('assessmentDisclaimer').style.display = 'none';
+  document.getElementById('assessmentProgress').style.display = 'block';
+  document.getElementById('assessmentQuestions').style.display = 'block';
+  document.getElementById('assessmentSubmit').style.display = 'block';
+  renderQuestions();
+  updateProgress();
+}
+
+function renderQuestions() {
+  const config = ASSESSMENT_CONFIGS[currentAssessmentType];
+  const container = document.getElementById('assessmentQuestions');
+  let html = '';
+  let qIndex = 0;
+  config.questions.forEach((q) => {
+    if (q.section) {
+      html += `<div class="section-label">${q.section}${q.desc ? '<div style="font-size:13px;color:#718096;font-weight:400;margin-top:4px;">'+q.desc+'</div>' : ''}</div>`;
+    }
+    qIndex++;
+    let inputHtml = '';
+    if (q.type === 'radio') {
+      inputHtml = `<div class="radio-group" data-field="${q.field}">
+        ${q.options.map(opt => `
+          <div class="radio-item ${currentAnswers[q.field] === opt.value ? 'selected' : ''}" onclick="selectRadio('${q.field}', ${opt.value}, this)">
+            <input type="radio" name="${q.field}" value="${opt.value}" ${currentAnswers[q.field] === opt.value ? 'checked' : ''}>
+            <span>${opt.label}</span>
+          </div>
+        `).join('')}
+      </div>`;
+    } else if (q.type === 'checkbox') {
+      const vals = currentAnswers[q.field] || [];
+      inputHtml = `<div class="checkbox-group" data-field="${q.field}">
+        ${q.options.map(opt => `
+          <div class="checkbox-item ${vals.includes(opt.value) ? 'selected' : ''}" onclick="toggleCheckbox('${q.field}', '${opt.value}', this)">
+            <input type="checkbox" value="${opt.value}" ${vals.includes(opt.value) ? 'checked' : ''}>
+            <span>${opt.label}</span>
+          </div>
+        `).join('')}
+      </div>`;
+    } else if (q.type === 'slider') {
+      const val = currentAnswers[q.field] !== undefined ? currentAnswers[q.field] : q.min || 0;
+      inputHtml = `<div class="slider-wrap">
+        <div class="slider-value">${val}</div>
+        <input type="range" min="${q.min}" max="${q.max}" step="${q.step}" value="${val}" oninput="updateSlider('${q.field}', this.value, this)">
+        <div class="slider-labels"><span>${q.minLabel}</span><span>${q.maxLabel}</span></div>
+      </div>`;
+    }
+    html += `
+      <div class="question-card">
+        <div class="question-label">
+          <span class="question-num">${qIndex}</span>
+          <span>${q.label}</span>
+          ${q.required ? '<span class="question-required">*</span>' : ''}
+        </div>
+        ${inputHtml}
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function selectRadio(field, value, el) {
+  currentAnswers[field] = value;
+  const group = el.closest('.radio-group');
+  group.querySelectorAll('.radio-item').forEach(item => item.classList.remove('selected'));
+  group.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+  updateProgress();
+}
+
+function toggleCheckbox(field, value, el) {
+  let vals = currentAnswers[field] || [];
+  if (vals.includes(value)) {
+    vals = vals.filter(v => v !== value);
+  } else {
+    vals.push(value);
+  }
+  currentAnswers[field] = vals;
+  el.classList.toggle('selected', vals.includes(value));
+  el.querySelector('input').checked = vals.includes(value);
+  updateProgress();
+}
+
+function updateSlider(field, value, el) {
+  currentAnswers[field] = Number(value);
+  el.closest('.slider-wrap').querySelector('.slider-value').textContent = value;
+  updateProgress();
+}
+
+function updateProgress() {
+  const config = ASSESSMENT_CONFIGS[currentAssessmentType];
+  const total = config.questions.length;
+  let answered = 0;
+  config.questions.forEach(q => {
+    const val = currentAnswers[q.field];
+    if (val !== undefined && val !== null && val !== '' && (!Array.isArray(val) || val.length > 0)) {
+      answered++;
+    }
+  });
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = answered + ' / ' + total;
+}
+
+// ==================== 风险/评分计算 ====================
+function calculateRisk() {
+  const a = currentAnswers;
+  const type = currentAssessmentType;
+
+  // 通用高风险检查（术后、红旗、急性早期）
+  if (a.post_op_status === 'not_approved') {
+    return { level: 'high', reasons: ['术后未获医生/康复师许可'], summary: '术后训练需经医生或康复师确认后进行，不建议自行练习。', nextSteps: ['尽快联系专业人员评估','避免自行训练'] };
+  }
+
+  // 急性早期硬排除：疼痛发生1-2周内不建议自行康复训练
+  if (a.injury_time === 'within_1_week' || a.injury_time === '1_to_2_weeks') {
+    return { level: 'high', reasons: ['处于急性早期（疼痛发生1-2周内）'], summary: '您目前处于急性早期，此阶段以休息、冰敷和保护为主，不建议自行进行康复训练。', nextSteps: ['建议尽快就医明确诊断','急性期以保护为主，避免加重损伤','待炎症消退后再评估是否开始康复'] };
+  }
+
+  const redFlags = a.red_flags || [];
+  if (!redFlags.includes('none')) {
+    if (type === 'low_back_pain') {
+      const highFlags = ['bowel_bladder','perineal_numbness','leg_weakness','severe_trauma','fever','worsening'];
+      if (highFlags.some(f => redFlags.includes(f))) {
+        return { level: 'high', reasons: ['存在腰椎红旗症状'], summary: '您的情况存在高风险信号，不建议自行练习康复动作。', nextSteps: ['建议尽快就医或联系专业康复师评估','避免负重和剧烈运动'] };
+      }
+    } else if (type === 'knee_pain') {
+      const highFlags = ['deformity','severe_swelling','numbness','worsening','fever'];
+      if (highFlags.some(f => redFlags.includes(f))) {
+        return { level: 'high', reasons: ['存在膝关节红旗症状'], summary: '您的情况存在高风险信号，不建议自行练习康复动作。', nextSteps: ['建议尽快就医或联系专业康复师评估','避免负重和剧烈运动'] };
+      }
+    } else if (type === 'shoulder_pain') {
+      const highFlags = ['deformity','severe_swelling','numbness','worsening','fever'];
+      if (highFlags.some(f => redFlags.includes(f))) {
+        return { level: 'high', reasons: ['存在肩关节红旗症状'], summary: '您的情况存在高风险信号，不建议自行练习康复动作。', nextSteps: ['建议尽快就医或联系专业康复师评估','避免负重和剧烈运动'] };
+      }
+    }
+  }
+
+  if (type === 'shoulder_pain') {
+    const score = (a.cm_pain||0) + (a.cm_adl_sleep||0) + (a.cm_adl_work||0) + (a.cm_adl_leisure||0) + (a.cm_adl_reach||0) + (a.cm_rom_flexion||0) + (a.cm_rom_abduction||0) + (a.cm_rom_external||0) + (a.cm_rom_internal||0) + (a.cm_strength||0);
+    let level = 'low';
+    const reasons = [];
+    if (score < 70) reasons.push('Constant-Murley 评分较低（'+score+'分）');
+    else reasons.push('Constant-Murley 评分 '+score+' 分');
+
+    if (score < 50) level = 'high';
+    else if (score < 70) level = 'medium';
+
+    if (level === 'high') {
+      return { level, reasons, score, scoreLabel: '功能较差', summary: '肩关节功能评分较低，存在明显功能障碍，不建议自行练习。', nextSteps: ['建议尽快进行线下康复评估','在专业指导下进行针对性训练'] };
+    } else if (level === 'medium') {
+      return { level, reasons, score, scoreLabel: '功能中等', summary: '肩关节功能中等受限，建议线下评估后再进行针对性训练。', nextSteps: ['建议预约线下康复评估','可尝试低强度保守动作','密切观察身体反应'] };
+    } else {
+      return { level, reasons, score, scoreLabel: '功能良好', summary: '肩关节功能评分良好，可尝试基础康复动作并观察反应。', nextSteps: ['按推荐动作进行练习','练习3-5天观察反应','如疼痛加重请停止并咨询'] };
+    }
+  }
+
+  if (type === 'knee_pain') {
+    // KOOS 精简版 5 维度评分（各维度标准分 0-100，100=无问题）
+    const sympRaw = (a.koos_s1||0) + (a.koos_s2||0) + (a.koos_s6||0);
+    const painRaw = (a.koos_p1||0) + (a.koos_p5||0) + (a.koos_p6||0) + (a.koos_p7||0);
+    const adlRaw = (a.koos_a1||0) + (a.koos_a2||0) + (a.koos_a3||0) + (a.koos_a5||0) + (a.koos_a9||0) + (a.koos_a15||0);
+    const sportRaw = (a.koos_sp1||0) + (a.koos_sp2||0);
+    const qolRaw = (a.koos_q1||0) + (a.koos_q3||0);
+
+    const sympScore = Math.round(100 - (sympRaw / 3) * 25);
+    const painScore = Math.round(100 - (painRaw / 4) * 25);
+    const adlScore = Math.round(100 - (adlRaw / 6) * 25);
+    const sportScore = Math.round(100 - (sportRaw / 2) * 25);
+    const qolScore = Math.round(100 - (qolRaw / 2) * 25);
+
+    const avgScore = Math.round((sympScore + painScore + adlScore + sportScore + qolScore) / 5);
+
+    let level = 'low';
+    const reasons = ['KOOS 综合评分 ' + avgScore + ' 分'];
+    reasons.push('症状' + sympScore + ' / 疼痛' + painScore + ' / 日常' + adlScore + ' / 运动' + sportScore + ' / 生活质量' + qolScore);
+
+    if (avgScore < 45) level = 'high';
+    else if (avgScore < 70) level = 'medium';
+
+    if (level === 'high') {
+      return { level, reasons, score: avgScore, scoreLabel: '功能严重受限', summary: '膝关节功能评分较低，不建议自行练习康复动作。', nextSteps: ['建议尽快就医或联系专业康复师评估','避免负重和剧烈运动'] };
+    } else if (level === 'medium') {
+      return { level, reasons, score: avgScore, scoreLabel: '功能中度受限', summary: '膝关节功能中度受限，建议线下评估后再进行针对性训练。', nextSteps: ['建议预约线下康复评估','可尝试低强度保守动作','密切观察身体反应'] };
+    } else {
+      return { level, reasons, score: avgScore, scoreLabel: '功能轻度受限', summary: '膝关节功能轻度受限，可尝试基础康复动作并观察反应。', nextSteps: ['按推荐动作进行练习','练习3-5天观察反应','如疼痛加重请停止并咨询'] };
+    }
+  }
+
+  if (type === 'low_back_pain') {
+    const medReasons = [];
+    if ((a.pain_level||0) >= 5) medReasons.push('疼痛≥5分');
+    if (a.injury_time === 'over_1_month') medReasons.push('疼痛持续超过1个月');
+    if (a.bending_limitation === 'moderate') medReasons.push('弯腰明显受限');
+    if (a.bending_limitation === 'severe') medReasons.push('弯腰严重受限');
+    if (a.sitting_aggravation === 'yes') medReasons.push('久坐加重');
+    if (a.leg_radiation === 'moderate') medReasons.push('明显下肢放射痛');
+    if (a.leg_radiation === 'severe') medReasons.push('严重下肢放射痛');
+
+    if (medReasons.length > 0) return { level: 'medium', reasons: medReasons, summary: '您的情况属于中风险，建议线下评估后再进行针对性训练。', nextSteps: ['建议预约线下康复评估','可尝试低强度保守动作','密切观察身体反应'] };
+    return { level: 'low', reasons: ['未触发中高风险规则'], summary: '您的情况风险较低，可尝试基础康复动作并观察反应。', nextSteps: ['按推荐动作进行练习','练习3-5天观察反应','如疼痛加重请停止并咨询'] };
+  }
+
+  if (type === 'mental_health') {
+    let sp = 0;
+    for (let i=1;i<=6;i++) sp += (a['sp_'+i] || 0);
+
+    let level = 'low';
+    const reasons = [];
+    let summary = '';
+    let nextSteps = [];
+
+    if (sp >= 10) {
+      level = 'high';
+      reasons.push('运动心理风险较高（专项:'+sp+'分）');
+    } else if (sp >= 6) {
+      level = 'medium';
+      reasons.push('运动心理风险中等（专项:'+sp+'分）');
+    } else {
+      reasons.push('运动心理状态良好（专项:'+sp+'分）');
+    }
+
+    if (level === 'high') {
+      summary = '运动心理状态评估提示需要关注，建议寻求专业心理咨询或运动心理支持。';
+      nextSteps = ['建议尽快联系心理咨询师或运动心理顾问','如果感到情绪难以承受，请立即寻求身边人帮助','运动恢复需在心理状态稳定后进行'];
+    } else if (level === 'medium') {
+      summary = '运动心理状态存在一定波动，建议关注情绪变化，必要时寻求支持。';
+      nextSteps = ['可尝试放松训练、正念呼吸等调节方法','保持轻度运动有助于情绪改善','如情绪持续低落，建议预约心理咨询'];
+    } else {
+      summary = '运动心理状态评估结果良好，继续保持积极的生活方式。';
+      nextSteps = ['继续保持规律运动和良好作息','关注伤后心理波动，及时调整','如有需要可随时联系康复顾问'];
+    }
+
+    return { level, reasons, sp, summary, nextSteps };
+  }
+
+  return { level: 'low', reasons: ['未触发风险规则'], summary: '风险较低', nextSteps: ['观察','按需咨询'] };
+}
+
+function getRecommendedExercises(level, bodyArea) {
+  return EXERCISES
+    .filter(e => e.body_area === bodyArea && e.risk_allowed.includes(level))
+    .slice(0, level === 'low' ? 5 : 3);
+}
+
+// ==================== 提交 ====================
+function submitAssessment() {
+  const config = ASSESSMENT_CONFIGS[currentAssessmentType];
+  for (const q of config.questions) {
+    if (q.required) {
+      const val = currentAnswers[q.field];
+      if (val === undefined || val === null || val === '' || (Array.isArray(val) && val.length === 0)) {
+        toast('请补充完整后查看结果');
+        return;
+      }
+    }
+  }
+
+  currentResult = calculateRisk();
+  const bodyAreaMap = { shoulder_pain: 'shoulder', knee_pain: 'knee', low_back_pain: 'low_back', mental_health: '' };
+  const bodyArea = bodyAreaMap[currentAssessmentType];
+  const exercises = (currentResult.level !== 'high' && bodyArea) ? getRecommendedExercises(currentResult.level, bodyArea) : [];
+
+  renderResult(currentResult, exercises);
+  goToPage('pageResult', '自查结果');
+}
+
+function renderResult(result, exercises) {
+  const levelMap = { low: {text:'低风险',icon:'✅',cls:'risk-low'}, medium: {text:'中风险',icon:'⚠️',cls:'risk-medium'}, high: {text:'高风险',icon:'🚨',cls:'risk-high'} };
+  const style = levelMap[result.level];
+  const type = currentAssessmentType;
+
+  let scoreHtml = '';
+  if (type === 'shoulder_pain' && result.score !== undefined) {
+    scoreHtml = `
+      <div class="score-card">
+        <div class="score-value">${result.score}</div>
+        <div class="score-label">Constant-Murley 总分（满分100）</div>
+        <div class="score-level">${result.scoreLabel}</div>
+      </div>`;
+  } else if (type === 'knee_pain' && result.score !== undefined) {
+    scoreHtml = `
+      <div class="score-card">
+        <div class="score-value">${result.score}</div>
+        <div class="score-label">LEFS 评分（满分${result.maxScore}，百分比 ${result.pct}%）</div>
+        <div class="score-level">${result.scoreLabel}</div>
+      </div>`;
+  } else if (type === 'mental_health') {
+    scoreHtml = `
+      <div class="score-card">
+        <div class="score-value">${result.sp}</div>
+        <div class="score-label">运动心理专项评分（满分18分）</div>
+        <div class="score-level">${result.sp >= 10 ? '风险较高' : result.sp >= 6 ? '风险中等' : '状态良好'}</div>
+      </div>`;
+  }
+
+  let exercisesHtml = '';
+  if (result.level !== 'high' && exercises.length > 0) {
+    exercisesHtml = `
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">推荐动作</div>
+        <div class="card-subtitle">请根据身体反应谨慎练习，如有不适立即停止</div>
+        <div class="exercise-preview" style="margin-top:12px;">
+          ${exercises.map(e => `
+            <div class="exercise-mini" onclick="goToExerciseDetail('${e.exercise_id}')">
+              <div class="exercise-mini-poster">🎬</div>
+              <div>
+                <div class="exercise-mini-title">${e.title}</div>
+                <div style="margin-top:4px;"><span class="tag tag-blue">${e.category_text}</span></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  } else if (result.level === 'high') {
+    exercisesHtml = `
+      <div class="card warning-card" style="margin-top:12px;">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-title">不建议自行练习</div>
+        <div class="warning-desc">您的情况存在高风险信号，建议优先联系专业人员或及时就医。</div>
+      </div>`;
+  }
+
+  document.getElementById('resultContent').innerHTML = `
+    ${scoreHtml}
+    <div class="risk-card ${style.cls}">
+      <div class="risk-badge">${style.icon} ${style.text}</div>
+      <div class="risk-summary">${result.summary}</div>
+      <div class="risk-reasons">
+        <div class="risk-reason-title">触发原因</div>
+        ${result.reasons.map(r => `<div class="risk-reason-item">• ${r}</div>`).join('')}
+      </div>
+      <div class="risk-next-steps" style="margin-top:16px;">
+        <div class="risk-step-title">下一步建议</div>
+        ${result.nextSteps.map((s, i) => `<div class="risk-step-item">${i + 1}. ${s}</div>`).join('')}
+      </div>
+    </div>
+    ${exercisesHtml}
+  `;
+}
+
+function retakeAssessment() {
+  currentAnswers = {};
+  goToAssessment(currentAssessmentType);
+}
+
+function copyResult() {
+  if (!currentResult) return;
+  const typeText = { shoulder_pain: '肩痛自查', knee_pain: '膝痛自查', low_back_pain: '腰痛自查', mental_health: '运动心理测评' }[currentAssessmentType];
+  const riskText = {low:'低风险',medium:'中风险',high:'高风险'}[currentResult.level];
+  let summary = `【${typeText}结果】\n风险等级：${riskText}\n`;
+  if (currentResult.score !== undefined) summary += `评分：${currentResult.score}\n`;
+  if (currentResult.sp !== undefined) summary += `运动心理专项：${currentResult.sp}\n`;
+  summary += `\n建议：${currentResult.summary}\n\n---\n来自运动康复小程序`;
+  navigator.clipboard?.writeText(summary).then(() => toast('已复制，请发送给康复顾问')).catch(() => toast('复制失败'));
+}
+
+// ==================== 动作库 ====================
+function getAreaText(area) {
+  const map = { shoulder: '肩部', knee: '膝关节', low_back: '腰部' };
+  return map[area] || area;
+}
+
+function renderExerciseList() {
+  let list = EXERCISES;
+  if (filterBodyArea !== 'all') list = list.filter(e => e.body_area === filterBodyArea);
+  if (activeFilterCategory !== 'all') list = list.filter(e => e.category === activeFilterCategory);
+
+  const html = list.length > 0 ? list.map(e => `
+    <div class="exercise-card" onclick="goToExerciseDetail('${e.exercise_id}')">
+      <div class="exercise-poster">🎬</div>
+      <div class="exercise-card-right">
+        <div class="exercise-card-title">${e.title}</div>
+        <div class="exercise-card-tags">
+          <span class="tag tag-blue">${getAreaText(e.body_area)}</span>
+          <span class="tag" style="background:#EDF2F7;color:#4A5568;">${e.category_text}</span>
+        </div>
+        <div class="exercise-card-risk-text ${e.risk_allowed.includes('high') ? 'danger' : 'safe'}">
+          ${e.risk_allowed.includes('high') ? '需线下评估后使用' : '可自查后练习'}
+        </div>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">暂无匹配动作</div>
+      <div class="empty-desc">可联系康复顾问咨询</div>
+    </div>
+  `;
+  document.getElementById('exerciseList').innerHTML = html;
+}
+
+function filterArea(area, el) {
+  filterBodyArea = area;
+  el.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderExerciseList();
+}
+
+function filterCategory(cat, el) {
+  activeFilterCategory = cat;
+  el.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderExerciseList();
+}
+
+// ==================== 动作详情 ====================
+function goToExerciseDetail(id) {
+  const e = EXERCISES.find(x => x.exercise_id === id);
+  if (!e) return;
+  const html = `
+    <div class="exercise-header" style="margin-bottom:16px;">
+      <div class="exercise-card-title" style="font-size:22px;">${e.title}</div>
+      <div class="exercise-card-tags" style="margin-top:10px;">
+        <span class="tag tag-blue">${getAreaText(e.body_area)}</span>
+        <span class="tag" style="background:#EDF2F7;color:#4A5568;">${e.category_text}</span>
+        <span class="tag ${e.risk_allowed.includes('high') ? 'tag-red' : 'tag-green'}">${e.risk_allowed.includes('high') ? '需评估' : '可练习'}</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">动作步骤</div>
+      <div class="steps">${e.steps.map((s,i) => `
+        <div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>
+      `).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">建议频次</div>
+      <div class="section-content">${e.sets_reps}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">✅ 适用人群</div>
+      <div class="tag-list">${e.suitable_for.map(t => `<span class="tag tag-green">${t}</span>`).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">❌ 不适用人群</div>
+      <div class="tag-list">${e.not_suitable_for.map(t => `<span class="tag tag-red">${t}</span>`).join('')}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">⚠️ 常见错误</div>
+      <div class="warning-list">${e.common_mistakes.map(m => `<div class="warning-item">${m}</div>`).join('')}</div>
+    </div>
+    <div class="section stop-section">
+      <div class="section-title">🛑 停止条件</div>
+      <div style="font-size:13px;color:#4A5568;margin-bottom:8px;">如练习中出现以下情况，请立即停止：</div>
+      ${e.stop_conditions.map(c => `<div class="stop-item">${c}</div>`).join('')}
+    </div>
+  `;
+  document.getElementById('exerciseDetailCard').innerHTML = html;
+  goToPage('pageExerciseDetail', e.title);
+}
+
+// ==================== 客服弹层 ====================
+function openContactModal(source) {
+  const section = document.getElementById('modalSummarySection');
+  if (currentResult && source === 'result') {
+    const typeText = { shoulder_pain: '肩痛自查', knee_pain: '膝痛自查', low_back_pain: '腰痛自查', mental_health: '运动心理测评' }[currentAssessmentType];
+    const riskText = {low:'低风险',medium:'中风险',high:'高风险'}[currentResult.level];
+    let summary = `【${typeText}结果】\n风险等级：${riskText}\n`;
+    if (currentResult.score !== undefined) summary += `评分：${currentResult.score}\n`;
+    if (currentResult.sp !== undefined) summary += `运动心理专项：${currentResult.sp}\n`;
+    summary += `建议：${currentResult.summary}`;
+    document.getElementById('modalSummaryText').textContent = summary;
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+  document.getElementById('contactModal').classList.add('open');
+}
+
+function closeContactModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('contactModal').classList.remove('open');
+}
+
+function copyWechat() {
+  navigator.clipboard?.writeText('rehab_consultant').then(() => toast('微信号已复制')).catch(() => toast('复制失败'));
+}
+
+function copySummaryFromModal() {
+  const text = document.getElementById('modalSummaryText').textContent;
+  navigator.clipboard?.writeText(text).then(() => toast('摘要已复制')).catch(() => toast('复制失败'));
+}
+
+// ==================== Toast ====================
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ==================== 初始化 ====================
+renderHomeExercises();
+renderExerciseList();
+</script>
+</body>
+</html>
