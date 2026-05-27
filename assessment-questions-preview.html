@@ -159,6 +159,255 @@
     overflow-x: auto;
     margin: 16px 0;
   }
+  /* ===== 决策流程可视化 ===== */
+  .decision-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .decision-step {
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .decision-step::after {
+    content: "↓";
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    color: var(--gray-400);
+    font-weight: 700;
+  }
+  .decision-step:last-child::after {
+    display: none;
+  }
+  .step-header {
+    background: linear-gradient(135deg, #374151, #1f2937);
+    color: white;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .step-header .step-num {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  .step-body {
+    padding: 0;
+  }
+  .option-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+  }
+  .option-row:last-child {
+    border-bottom: none;
+  }
+  .option-row:hover {
+    background: var(--gray-50);
+  }
+  .option-text {
+    flex: 1;
+    color: var(--gray-800);
+  }
+  .option-text::before {
+    content: "○";
+    margin-right: 8px;
+    color: var(--gray-400);
+  }
+  .option-result {
+    flex-shrink: 0;
+    margin-left: 12px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .result-pass {
+    background: #dcfce7;
+    color: var(--success);
+  }
+  .result-stop {
+    background: #fee2e2;
+    color: var(--danger);
+  }
+  .result-next {
+    background: #dbeafe;
+    color: var(--primary);
+  }
+  .score-map-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .score-map-table th {
+    background: var(--gray-100);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 2px solid var(--gray-300);
+  }
+  .score-map-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+  .score-bar {
+    display: flex;
+    height: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 16px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    line-height: 28px;
+  }
+  .score-bar .bar-low { background: var(--success); }
+  .score-bar .bar-mid { background: var(--warning); }
+  .score-bar .bar-high { background: var(--danger); }
+  .algo-summary {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .algo-summary strong {
+    color: var(--gray-900);
+  }
+  .sub-section {
+    margin: 28px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--gray-300);
+  }
+  .sub-section h4 {
+    font-size: 15px;
+    color: var(--gray-900);
+    margin: 0;
+  }
+  .risk-legend {
+    display: flex;
+    gap: 16px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+  .risk-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .risk-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  /* ===== 总览流程图 ===== */
+  .flow-overview {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .flow-overview-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .flow-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    min-width: 700px;
+  }
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .flow-box {
+    background: white;
+    border: 2px solid var(--gray-300);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+    min-width: 120px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .flow-box .fb-title {
+    font-weight: 700;
+    color: var(--gray-900);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .flow-box .fb-q {
+    color: var(--gray-600);
+    font-size: 11px;
+  }
+  .flow-box.stop {
+    border-color: var(--danger);
+    background: #fef2f2;
+  }
+  .flow-box.pass {
+    border-color: var(--success);
+    background: #f0fdf4;
+  }
+  .flow-box.score {
+    border-color: var(--primary);
+    background: #eff6ff;
+  }
+  .flow-arrow-h {
+    display: flex;
+    align-items: center;
+    padding-top: 28px;
+    font-size: 18px;
+    color: var(--gray-400);
+  }
+  .flow-branch {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .flow-branch.reject {
+    background: var(--danger);
+    color: white;
+  }
+  .flow-branch.accept {
+    background: var(--success);
+    color: white;
+  }
   .new-feature {
     display: inline-block;
     padding: 1px 6px;
@@ -360,55 +609,299 @@
 </section>
 
 <section id="algorithm">
-  <h2>四、分层算法</h2>
+  <h2>四、分层算法（可视化决策流）</h2>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">
+    以下展示完整的决策流程：先经过三道<strong>硬排除闸口</strong>（任一触发即判定 L6 高风险），未触发则进入<strong>部位评分算法</strong>，按总分区间映射到对应风险层级。每个选项旁标注选中后的直接结果。
+  </p>
 
-  <h3>4.1 通用硬排除（直接判定 L6 高风险）</h3>
-  <div class="code-block">
-Step 1: 硬排除 → L6 高风险
-  → 术后未获医生许可
-  → 急性早期：疼痛发生 1周内 或 1-2周
-  → 红旗症状（按部位）：
-     · 肩部：畸形/严重肿胀/麻木/持续加重/发热
-     · 膝部：畸形/严重肿胀/麻木/持续加重/发热
-     · 腰部：大小便异常/会阴麻木/下肢无力/严重外伤/发热/持续加重
+  <div class="risk-legend">
+    <div class="risk-legend-item"><span class="risk-dot" style="background:var(--danger)"></span> L6 高风险（硬排除）</div>
+    <div class="risk-legend-item"><span class="risk-dot" style="background:var(--warning)"></span> 中风险</div>
+    <div class="risk-legend-item"><span class="risk-dot" style="background:var(--success)"></span> 低风险</div>
+    <div class="risk-legend-item"><span class="risk-dot" style="background:var(--primary)"></span> 进入下一步评分</div>
   </div>
 
-  <h3>4.2 部位评分算法</h3>
-  <div class="code-block">
-Step 2: 肩痛 — Constant-Murley 2008 核心 10 题
-  疼痛(0-15) + ADL睡眠(0-2) + ADL工作(0-4) + ADL休闲(0-4)
-  + ADL位置(0-10) + ROM前屈(0-10) + ROM外展(0-10)
-  + ROM外旋(0-10) + ROM内旋(0-10) + 肌力(0-25)
-  = 总分 0-100
-  · ≥70 分 → 低风险（L2/L3）
-  · 50-69 分 → 中风险（L3/L4）
-  · <50 分 → 高风险 → L4 专科评估指征
+  <h3>4.1 通用硬排除（三道闸口，任一触发 → L6 高风险）</h3>
 
-Step 3: 膝痛 — KOOS 精简版 5 维度
-  症状(3题) + 疼痛(4题) + ADL(6题) + 运动(2题) + QOL(2题) = 17核心题
-  各维度标准分 = 100 - (原始分/题数 × 25)，范围 0-100
-  综合分 = 5 维度平均分
-  · 综合分 ≥70 → 低风险
-  · 综合分 45-69 → 中风险
-  · 综合分 <45 → 高风险
-
-Step 4: 腰痛 — 改良 ODI 6 题 + 红旗筛查
-  ODI 总分 0-28（7题 × 每题0-4分）
-  · ≤8 分 → 低风险
-  · 9-16 分 → 中风险
-  · ≥17 分 → 高风险
-  附加规则：
-  · 疼痛≥5分 / 弯腰明显受限 / 久坐加重 / 下肢放射痛 → 中风险
+  <!-- 总览流程图 -->
+  <div class="flow-overview">
+    <div class="flow-overview-title">📊 完整判定流程总览（三道闸口优先顺序）</div>
+    <div class="flow-track">
+      <div class="flow-node">
+        <div class="flow-branch reject">未许可 → L6</div>
+        <div class="flow-box">
+          <div class="fb-title">Step 1</div>
+          <div class="fb-q">术后状态</div>
+          <div class="fb-q">S19 / K20</div>
+        </div>
+      </div>
+      <div class="flow-arrow-h">→</div>
+      <div class="flow-node">
+        <div class="flow-branch reject">≤2周 → L6</div>
+        <div class="flow-box">
+          <div class="fb-title">Step 2</div>
+          <div class="fb-q">病程时间</div>
+          <div class="fb-q">S17 / K18 / L8</div>
+        </div>
+      </div>
+      <div class="flow-arrow-h">→</div>
+      <div class="flow-node">
+        <div class="flow-branch reject">有症状 → L6</div>
+        <div class="flow-box">
+          <div class="fb-title">Step 3</div>
+          <div class="fb-q">红旗症状</div>
+          <div class="fb-q">S18 / K19 / L9</div>
+        </div>
+      </div>
+      <div class="flow-arrow-h">→</div>
+      <div class="flow-node">
+        <div class="flow-branch accept">通过 → 评分</div>
+        <div class="flow-box score">
+          <div class="fb-title">部位评分</div>
+          <div class="fb-q">肩 CMS / 膝 KOOS</div>
+          <div class="fb-q">腰 ODI</div>
+        </div>
+      </div>
+      <div class="flow-arrow-h">→</div>
+      <div class="flow-node">
+        <div class="flow-box pass">
+          <div class="fb-title">风险层级</div>
+          <div class="fb-q">低 / 中 / 高</div>
+          <div class="fb-q">L2~L4</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <h3>4.3 运动心理评分</h3>
-  <div class="code-block">
-Step 5: 运动心理专项（6题，满分 18 分）
-  sp_1 ~ sp_6，每题 0-3 分
-  · ≤6 分 → 心理状态良好
-  · 7-11 分 → 存在一定波动，建议关注
-  · ≥12 分 → 风险较高，建议寻求运动心理支持
-  注：运动心理评分仅作参考，不参与整体风险分层硬判定
+  <div class="decision-flow">
+    <!-- Step 1 -->
+    <div class="decision-step">
+      <div class="step-header"><span class="step-num">1</span>术后状态检查（题 S19 / K20）</div>
+      <div class="step-body">
+        <div class="option-row">
+          <div class="option-text">术后，尚未获得医生许可</div>
+          <div class="option-result result-stop">🚨 直接 L6 高风险</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">无手术史</div>
+          <div class="option-result result-next">→ 进入 Step 2</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">术后，且已获得医生许可</div>
+          <div class="option-result result-next">→ 进入 Step 2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="decision-step">
+      <div class="step-header"><span class="step-num">2</span>病程时间检查（题 S17 / K18 / L8）</div>
+      <div class="step-body">
+        <div class="option-row">
+          <div class="option-text">1周内（急性早期）</div>
+          <div class="option-result result-stop">🚨 直接 L6 高风险</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">1-2周（急性期）</div>
+          <div class="option-result result-stop">🚨 直接 L6 高风险</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">2-4周（亚急性期）</div>
+          <div class="option-result result-next">→ 进入 Step 3</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">超过1个月（慢性期）</div>
+          <div class="option-result result-next">→ 进入 Step 3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="decision-step">
+      <div class="step-header"><span class="step-num">3</span>红旗症状检查（题 S18 / K19 / L9）</div>
+      <div class="step-body">
+        <div class="option-row">
+          <div class="option-text">勾选任意一项症状（除"以上均无"）</div>
+          <div class="option-result result-stop">🚨 直接 L6 高风险</div>
+        </div>
+        <div class="option-row">
+          <div class="option-text">以上均无</div>
+          <div class="option-result result-pass">✓ 通过硬排除 → 进入部位评分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="algo-summary">
+    <strong>硬排除闸口总结：</strong>三个问题有严格的<strong>优先顺序</strong>：术后未许可 → 急性早期（≤2周）→ 红旗症状。任一条件满足即终止测评，直接输出 L6 高风险建议。三题全部未触发，才进入下面的部位评分算法。
+  </div>
+
+  <h3>4.2 部位评分算法（总分 → 风险层级映射）</h3>
+
+  <!-- 肩痛 -->
+  <div class="sub-section"><h4>🔷 肩痛 — Constant-Murley 核心 10 题计分</h4></div>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">
+    10 道核心题累计得分，满分 100 分。下表列出每道题的<strong>选项与对应分值</strong>，以及累计总分后的<strong>风险判定标准</strong>。
+  </p>
+
+  <table class="score-map-table">
+    <thead>
+      <tr><th style="width:18%">题号</th><th style="width:32%">题目</th><th style="width:20%">分值范围</th><th style="width:30%">分值规则</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>S1</strong> 疼痛</td><td>过去24小时最严重肩痛</td><td>0 ~ 15 分</td><td>无痛15 → 重度疼痛3 → 无法忍受0</td></tr>
+      <tr><td><strong>S2</strong> ADL睡眠</td><td>夜间睡眠是否受肩痛干扰</td><td>0 ~ 2 分</td><td>正常2 → 偶尔醒来1 → 难以入睡0</td></tr>
+      <tr><td><strong>S3</strong> ADL工作</td><td>肩部对工作/日常活动限制</td><td>0 ~ 4 分</td><td>完全不受限4 → 严重受限1 → 几乎无法0</td></tr>
+      <tr><td><strong>S4</strong> ADL休闲</td><td>肩部对休闲/体育活动限制</td><td>0 ~ 4 分</td><td>同 S3 四档</td></tr>
+      <tr><td><strong>S5</strong> ADL位置</td><td>手臂无痛活动能达到的位置</td><td>0 ~ 10 分</td><td>过顶10 → 头顶8 → 颈部6 → 剑突4 → 腰2 → 腰下0</td></tr>
+      <tr><td><strong>S6</strong> ROM前屈</td><td>肩前屈最大角度</td><td>0 ~ 10 分</td><td>151-180°10 → 121-150°8 → 91-120°6 → 61-90°4 → 31-60°2 → 0-30°0</td></tr>
+      <tr><td><strong>S7</strong> ROM外展</td><td>肩外展最大角度</td><td>0 ~ 10 分</td><td>角度分档同 S6</td></tr>
+      <tr><td><strong>S8</strong> ROM外旋</td><td>5个动作能完成几个（各2分）</td><td>0 ~ 10 分</td><td>5个10 → 4个8 → 3个6 → 2个4 → 1个2 → 0个0</td></tr>
+      <tr><td><strong>S9</strong> ROM内旋</td><td>拇指触背最高位置</td><td>0 ~ 10 分</td><td>肩胛间10 → T12水平8 → 腰部6 → 腰骶4 → 臀部2 → 大腿外侧0</td></tr>
+      <tr><td><strong>S10</strong> 肌力</td><td>侧平举抗阻5秒力量自评</td><td>0 ~ 25 分</td><td>正常25 → 轻度减弱20 → 中度减弱15 → 明显减弱10 → 非常弱5 → 完全无力0</td></tr>
+    </tbody>
+  </table>
+
+  <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:13px;">
+    <strong>💡 计分示例：</strong>某用户 S1选12分(轻度疼痛) + S2选2分(睡眠正常) + S3选3分(轻度受限) + S4选3分 + S5选8分(头顶) + S6选10分(正常) + S7选8分 + S8选6分(3个动作) + S9选8分 + S10选20分 = <strong>80 分</strong> → <span class="badge badge-success">低风险</span>
+  </div>
+
+  <p style="font-size:13px;font-weight:600;color:var(--gray-800);margin:16px 0 8px;">总分 → 风险层级映射：</p>
+  <div class="score-bar">
+    <div class="bar-high" style="width:50%">&lt;50 分 → 高风险</div>
+    <div class="bar-mid" style="width:20%">50-69 → 中风险</div>
+    <div class="bar-low" style="width:30%">≥70 → 低风险</div>
+  </div>
+  <table class="score-map-table">
+    <thead><tr><th>总分区间</th><th>风险等级</th><th>对应层级</th><th>处理建议</th></tr></thead>
+    <tbody>
+      <tr><td><strong>≥70 分</strong></td><td><span class="badge badge-success">低风险</span></td><td>L2 / L3</td><td>结构化进阶康复方案 / 标准康复动作包</td></tr>
+      <tr><td><strong>50 ~ 69 分</strong></td><td><span class="badge badge-warning">中风险</span></td><td>L3 / L4</td><td>标准康复动作包，建议复评追踪</td></tr>
+      <tr><td><strong>&lt;50 分</strong></td><td><span class="badge badge-danger">高风险</span></td><td>L4 专科评估指征</td><td>建议线下专科评估 + 附近康复机构入口</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 膝痛 -->
+  <div class="sub-section"><h4>🔷 膝痛 — KOOS 精简版 5 维度计分</h4></div>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">
+    17 道核心题分为 5 个维度，每题均为 <strong>0~4 分</strong>（0=最优，4=最差）。各维度先算<strong>标准分</strong>（0-100），再取 5 维度<strong>平均值</strong>为综合分。
+  </p>
+
+  <table class="score-map-table">
+    <thead>
+      <tr><th>维度</th><th>题号</th><th>题目数</th><th>每题分值</th><th>标准分公式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>症状</td><td>K1 ~ K3</td><td>3</td><td>0 ~ 4</td><td>100 - (原始总分÷3 × 25)</td></tr>
+      <tr><td>疼痛</td><td>K4 ~ K7</td><td>4</td><td>0 ~ 4</td><td>100 - (原始总分÷4 × 25)</td></tr>
+      <tr><td>日常生活</td><td>K8 ~ K13</td><td>6</td><td>0 ~ 4</td><td>100 - (原始总分÷6 × 25)</td></tr>
+      <tr><td>运动/休闲</td><td>K14 ~ K15</td><td>2</td><td>0 ~ 4</td><td>100 - (原始总分÷2 × 25)</td></tr>
+      <tr><td>生活质量</td><td>K16 ~ K17</td><td>2</td><td>0 ~ 4</td><td>100 - (原始总分÷2 × 25)</td></tr>
+    </tbody>
+  </table>
+
+  <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:13px;">
+    <strong>💡 计分示例：</strong>某用户症状原始分=3(3题均选1分) → 标准分=100-(3÷3×25)=<strong>75</strong>；疼痛原始分=4(4题均选1分) → 标准分=75；ADL原始分=6 → 标准分=75；运动原始分=2 → 标准分=75；QOL原始分=2 → 标准分=75。综合分 = (75+75+75+75+75)÷5 = <strong>75 分</strong> → <span class="badge badge-success">低风险</span>
+  </div>
+
+  <p style="font-size:13px;font-weight:600;color:var(--gray-800);margin:16px 0 8px;">综合标准分 → 风险层级映射：</p>
+  <div class="score-bar">
+    <div class="bar-high" style="width:45%">&lt;45 分 → 高风险</div>
+    <div class="bar-mid" style="width:25%">45-69 → 中风险</div>
+    <div class="bar-low" style="width:30%">≥70 → 低风险</div>
+  </div>
+  <table class="score-map-table">
+    <thead><tr><th>综合分区间</th><th>风险等级</th><th>对应层级</th><th>处理建议</th></tr></thead>
+    <tbody>
+      <tr><td><strong>≥70 分</strong></td><td><span class="badge badge-success">低风险</span></td><td>L2 / L3</td><td>结构化进阶康复方案 / 标准康复动作包</td></tr>
+      <tr><td><strong>45 ~ 69 分</strong></td><td><span class="badge badge-warning">中风险</span></td><td>L3 / L4</td><td>标准康复动作包，建议复评追踪</td></tr>
+      <tr><td><strong>&lt;45 分</strong></td><td><span class="badge badge-danger">高风险</span></td><td>L4 专科评估指征</td><td>建议线下专科评估 + 附近康复机构入口</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 腰痛 -->
+  <div class="sub-section"><h4>🔷 腰痛 — 改良 ODI 7 题计分</h4></div>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">
+    7 道题（L1~L7），每题 <strong>0~4 分</strong>（0=无困难，4=做不到），累计总分 0~28 分。
+  </p>
+
+  <table class="score-map-table">
+    <thead>
+      <tr><th>题号</th><th>题目</th><th>分值规则</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>L1</strong></td><td>疼痛强度</td><td>无痛0 → 轻度1 → 中度2 → 重度3 → 极重度4</td></tr>
+      <tr><td><strong>L2</strong></td><td>个人护理（穿衣/洗澡）</td><td>无困难0 → 有点困难1 → 中等困难2 → 非常困难3 → 做不到4</td></tr>
+      <tr><td><strong>L3</strong></td><td>提物/搬重物</td><td>同 L2 五档</td></tr>
+      <tr><td><strong>L4</strong></td><td>行走</td><td>同 L2 五档</td></tr>
+      <tr><td><strong>L5</strong></td><td>坐姿</td><td>同 L2 五档</td></tr>
+      <tr><td><strong>L6</strong></td><td>站立</td><td>同 L2 五档</td></tr>
+      <tr><td><strong>L7</strong></td><td>社交活动</td><td>同 L2 五档</td></tr>
+    </tbody>
+  </table>
+
+  <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:13px;color:#92400e;">
+    <strong>⚠️ 附加中风险规则：</strong>即使总分≤8，若满足以下任一条件，仍上调为<strong>中风险</strong>：① L1 疼痛≥3分（重度以上）；② L3 弯腰明显受限（选3-4分）；③ L5 久坐加重（选3-4分）；④ 勾选下肢放射痛（红旗相关）。
+  </div>
+
+  <p style="font-size:13px;font-weight:600;color:var(--gray-800);margin:16px 0 8px;">总分 → 风险层级映射：</p>
+  <div class="score-bar">
+    <div class="bar-high" style="width:40%">≥17 分 → 高风险</div>
+    <div class="bar-mid" style="width:29%">9-16 → 中风险</div>
+    <div class="bar-low" style="width:31%">≤8 → 低风险</div>
+  </div>
+  <table class="score-map-table">
+    <thead><tr><th>总分区间</th><th>风险等级</th><th>对应层级</th><th>处理建议</th></tr></thead>
+    <tbody>
+      <tr><td><strong>≤8 分</strong></td><td><span class="badge badge-success">低风险</span></td><td>L2 / L3</td><td>结构化进阶康复方案 / 标准康复动作包</td></tr>
+      <tr><td><strong>9 ~ 16 分</strong></td><td><span class="badge badge-warning">中风险</span></td><td>L3 / L4</td><td>标准康复动作包，建议复评追踪</td></tr>
+      <tr><td><strong>≥17 分</strong></td><td><span class="badge badge-danger">高风险</span></td><td>L4 专科评估指征</td><td>建议线下专科评估 + 附近康复机构入口</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 运动心理评分（独立参考，不参与风险硬判定）</h3>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">
+    M1~M6 共 6 题，每题 <strong>0~3 分</strong>（0=从不，3=总是），满分 18 分。运动心理评分<strong>仅作参考提示</strong>，不进入部位风险分层的硬判定逻辑。
+  </p>
+
+  <table class="score-map-table">
+    <thead>
+      <tr><th>题号</th><th>题目</th><th>分值</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>M1</strong></td><td>因伤病无法训练感到焦虑</td><td>0~3</td></tr>
+      <tr><td><strong>M2</strong></td><td>担心恢复不到之前水平</td><td>0~3</td></tr>
+      <tr><td><strong>M3</strong></td><td>重返运动感到害怕或不确定</td><td>0~3</td></tr>
+      <tr><td><strong>M4</strong></td><td>停训让我情绪更低落</td><td>0~3</td></tr>
+      <tr><td><strong>M5</strong></td><td>过度担心同一部位再受伤</td><td>0~3</td></tr>
+      <tr><td><strong>M6</strong></td><td>对熟悉的运动动作失去信心</td><td>0~3</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:13px;font-weight:600;color:var(--gray-800);margin:16px 0 8px;">运动心理总分 → 参考提示：</p>
+  <div class="score-bar">
+    <div class="bar-high" style="width:33%">≥12 分 → 风险较高</div>
+    <div class="bar-mid" style="width:28%">7-11 → 存在一定波动</div>
+    <div class="bar-low" style="width:39%">≤6 → 心理状态良好</div>
+  </div>
+  <table class="score-map-table">
+    <thead><tr><th>总分区间</th><th>参考等级</th><th>报告提示语</th></tr></thead>
+    <tbody>
+      <tr><td><strong>≤6 分</strong></td><td><span class="badge badge-success">心理状态良好</span></td><td>不附加提示</td></tr>
+      <tr><td><strong>7 ~ 11 分</strong></td><td><span class="badge badge-warning">存在一定波动</span></td><td>报告中附加"建议关注心理状态"</td></tr>
+      <tr><td><strong>≥12 分</strong></td><td><span class="badge badge-danger">风险较高</span></td><td>报告中附加"建议寻求运动心理支持"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="algo-summary">
+    <strong>📋 完整判定流程总结：</strong><br>
+    ① 术后未许可？→ <strong>是</strong> → L6 高风险<br>
+    ② 病程 ≤2周？→ <strong>是</strong> → L6 高风险<br>
+    ③ 红旗症状？→ <strong>是</strong> → L6 高风险<br>
+    ④ 以上均否 → 按部位算总分 → <strong>≥70(肩/膝) 或 ≤8(腰)</strong> → 低风险<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>50-69(肩) / 45-69(膝) / 9-16(腰)</strong> → 中风险<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>&lt;50(肩) / &lt;45(膝) / ≥17(腰)</strong> → 高风险<br>
+    ⑤ 运动心理 ≥12 分 → 报告中附加心理支持建议（不改变层级）
   </div>
 </section>
 
