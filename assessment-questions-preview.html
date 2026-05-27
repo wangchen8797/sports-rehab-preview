@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运动康复测评问卷 — 题目总览</title>
+<style>
+  :root {
+    --primary: #2563eb; --danger: #dc2626; --warning: #f59e0b; --success: #16a34a;
+    --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db;
+    --gray-600: #4b5563; --gray-800: #1f2937; --gray-900: #111827;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6; color: var(--gray-800); background: var(--gray-50);
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  header {
+    background: linear-gradient(135deg, var(--primary), #1d4ed8);
+    color: white; padding: 40px 24px; border-radius: 16px; margin-bottom: 32px; text-align: center;
+  }
+  header h1 { font-size: 28px; margin-bottom: 8px; }
+  header p { opacity: 0.9; font-size: 15px; }
+  header p.sub { margin-top: 8px; font-size: 13px; opacity: 0.8; }
+  nav.toc {
+    background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: sticky; top: 16px; z-index: 100;
+  }
+  nav.toc h3 { font-size: 14px; color: var(--gray-600); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  nav.toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.toc li a {
+    display: block; padding: 6px 14px; background: var(--gray-100); border-radius: 8px;
+    text-decoration: none; color: var(--gray-800); font-size: 13px; transition: all 0.2s;
+  }
+  nav.toc li a:hover, nav.toc li a.active { background: var(--primary); color: white; }
+  section {
+    background: white; border-radius: 12px; padding: 28px; margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  section h2 {
+    font-size: 20px; color: var(--gray-900); margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 2px solid var(--gray-200);
+  }
+  section h3 { font-size: 16px; color: var(--gray-800); margin: 24px 0 12px; }
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px;
+  }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+  th { background: var(--gray-50); font-weight: 600; color: var(--gray-600); font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:hover td { background: var(--gray-50); }
+  .question-block {
+    background: var(--gray-50); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px;
+  }
+  .question-block .q-number {
+    display: inline-block; width: 28px; height: 28px; background: var(--primary);
+    color: white; border-radius: 50%; text-align: center; line-height: 28px;
+    font-size: 12px; font-weight: 700; margin-right: 10px; vertical-align: middle;
+  }
+  .question-block .q-text { font-weight: 600; font-size: 14px; vertical-align: middle; }
+  .question-block .q-meta {
+    margin-top: 6px; margin-left: 38px; font-size: 12px; color: var(--gray-600);
+  }
+  .question-block .q-options { margin-top: 10px; margin-left: 38px; }
+  .question-block .q-options li {
+    list-style: none; padding: 5px 0; font-size: 13px; color: var(--gray-700);
+  }
+  .question-block .q-options li::before {
+    content: "○"; margin-right: 8px; color: var(--gray-400);
+  }
+  .alert-box {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+    padding: 12px 16px; margin: 12px 0; font-size: 13px; color: var(--danger);
+  }
+  .alert-box strong { display: block; margin-bottom: 4px; }
+  .alert-critical {
+    background: #dc2626; color: white; border: none; border-radius: 8px;
+    padding: 16px; margin: 12px 0; font-size: 14px; font-weight: 600;
+  }
+  .info-box {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+    padding: 12px 16px; margin: 12px 0; font-size: 13px; color: var(--primary);
+  }
+  .module-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; margin-right: 6px;
+  }
+  .tag-a { background: #dbeafe; color: #1d4ed8; }
+  .tag-b { background: #d1fae5; color: #047857; }
+  .tag-c { background: #fee2e2; color: #b91c1c; }
+  .tag-d { background: #fef3c7; color: #b45309; }
+  .tag-e { background: #f3e8ff; color: #7c3aed; }
+  .tag-f { background: #fce7f3; color: #be185d; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; margin-left: 8px;
+  }
+  .badge-success { background: #dcfce7; color: var(--success); }
+  .badge-danger { background: #fee2e2; color: var(--danger); }
+  .badge-warning { background: #fef3c7; color: var(--warning); }
+  .badge-info { background: #dbeafe; color: var(--primary); }
+  section h4 {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin: 16px 0 8px;
+  }
+  .layer-card {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--primary);
+  }
+  .layer-card .layer-code {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    width: 50px;
+    flex-shrink: 0;
+  }
+  .layer-card .layer-name { font-weight: 600; flex: 1; }
+  .layer-card .layer-action { color: var(--gray-600); font-size: 13px; }
+  .action-card {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--success);
+    font-size: 14px;
+  }
+  .action-card .icon { font-size: 20px; margin-right: 12px; }
+  .action-card .label { font-weight: 600; }
+  .check-list {
+    list-style: none;
+    margin: 12px 0;
+  }
+  .check-list li {
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .check-list li::before {
+    content: "✓";
+    color: var(--success);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .code-block {
+    background: var(--gray-900);
+    color: #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+  .new-feature {
+    display: inline-block;
+    padding: 1px 6px;
+    background: #dcfce7;
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .section-hint {
+    font-size: 13px; color: var(--gray-600); margin-bottom: 16px;
+    padding: 10px 14px; background: var(--gray-50); border-radius: 8px;
+    border-left: 3px solid var(--primary);
+  }
+  .print-btn {
+    position: fixed; bottom: 24px; right: 24px; background: var(--primary);
+    color: white; border: none; padding: 14px 24px; border-radius: 50px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3); transition: all 0.2s;
+  }
+  .print-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.4); }
+  @media print {
+    body { background: white; }
+    nav.toc { display: none; }
+    section { box-shadow: none; border: 1px solid var(--gray-200); }
+    .print-btn { display: none; }
+  }
+  @media (max-width: 640px) {
+    header h1 { font-size: 22px; }
+    section { padding: 20px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🏥 运动康复综合评估问卷 V2.0 (优化版)</h1>
+  <p>7层精细用户分层 · 参考 CMS / KOOS / ODI 国际量表 · 肩/膝/腰三部位</p>
+  <p class="sub">版本：V2.0 | 优化日期：2026-05-26 | 状态：<span class="badge badge-success">审核通过</span></p>
+</header>
+
+<nav class="toc">
+  <h3>目录导航</h3>
+  <ul>
+    <li><a href="#overview" class="active">概述</a></li>
+    <li><a href="#changes">优化变更</a></li>
+    <li><a href="#layers">7层分层</a></li>
+    <li><a href="#algorithm">分层算法</a></li>
+    <li><a href="#shoulder">模块一 · 肩痛自查</a></li>
+    <li><a href="#knee">模块二 · 膝痛自查</a></li>
+    <li><a href="#lowback">模块三 · 腰痛自查</a></li>
+    <li><a href="#mental">模块四 · 运动心理测评</a></li>
+    <li><a href="#scoring">评分与分层规则</a></li>
+  </ul>
+</nav>
+
+<section id="overview">
+  <h2>一、设计概述</h2>
+  <p style="margin-bottom:16px;font-size:14px;color:var(--gray-700);">
+    本问卷面向<strong>有运动基础、希望预防损伤或已有轻度疼痛</strong>的人群。全卷为自评量表，采用选择题形式，覆盖肩、膝、腰三大常见运动损伤部位，以及运动心理状态。填写时间约 8-12 分钟。
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%">模块</th>
+        <th style="width:12%">题量</th>
+        <th style="width:20%">量表来源</th>
+        <th style="width:40%">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="module-tag tag-a">模块一</span> 肩痛自查</td>
+        <td><strong>19 题</strong></td>
+        <td>Constant-Murley 2008 + 运动功能专项</td>
+        <td>CMS 核心 10 题计分（满分 100），新增 6 题运动功能专项（不计分）+ 1 题病程 + 2 题安全筛查</td>
+      </tr>
+      <tr>
+        <td><span class="module-tag tag-b">模块二</span> 膝痛自查</td>
+        <td><strong>27 题</strong></td>
+        <td>KOOS（Knee Injury and Osteoarthritis Outcome Score）</td>
+        <td>膝关节特异性量表，精简版 17 题核心 + 3 题筛查</td>
+      </tr>
+      <tr>
+        <td><span class="module-tag tag-c">模块三</span> 腰痛自查</td>
+        <td><strong>9 题</strong></td>
+        <td>改良自 ODI / STarT Back + 红旗筛查</td>
+        <td>含日常活动、病程与红旗指标筛查</td>
+      </tr>
+      <tr>
+        <td><span class="module-tag tag-d">模块四</span> 运动心理测评</td>
+        <td><strong>6 题</strong></td>
+        <td>运动心理专项（删减后）</td>
+        <td>仅保留运动心理专项题，不含 GAD-7 / PHQ-9 通用量表</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="alert-critical">
+    ⚠️ 重要：本问卷仅用于健康参考，不能替代医生的专业诊断与评估。如疼痛剧烈、持续加重或伴有红肿发热，请立即就医。
+  </div>
+</section>
+<section id="changes">
+  <h2>二、本次优化变更</h2>
+  
+  <h3>2.1 高优先级优化（已实施）</h3>
+  <table>
+    <tr><th>#</th><th>优化项</th><th>变更内容</th><th>状态</th></tr>
+    <tr><td>1</td><td>CMS 量表原始化</td><td>肩痛模块从简化版升级为 Constant-Murley 2008 原始内容自评化，恢复疼痛 VAS、ADL 四维度、ROM 六档角度、外旋累计积分、内旋拇指触背等专业评估方式</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>2</td><td>急性早期硬排除</td><td>三部位统一新增 injury_time 病程题，疼痛发生 1-2 周内直接判定为高风险，避免急性期自行训练</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>3</td><td>运动功能专项扩展</td><td>肩部运动功能专项从抽象动作改为贴近日常大众运动（篮球/排球过顶、健身推举、羽毛球挥拍、游泳划水、日常负重）</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>4</td><td>心理量表精简</td><td>删除 GAD-7（7题）和 PHQ-9（9题），仅保留 6 题运动心理专项，聚焦运动人群心理</td><td><span class="badge badge-success">已实施</span></td></tr>
+  </table>
+
+  <h3>2.2 中优先级优化（已实施）</h3>
+  <table>
+    <tr><th>#</th><th>优化项</th><th>变更内容</th><th>状态</th></tr>
+    <tr><td>5</td><td>肩痛 ADL 结构调整</td><td>从 3 题（工作+伸手+手后伸）恢复为 CMS 原始 4 题（睡眠+工作+休闲+手臂位置），分值 2+4+4+10=20</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>6</td><td>ROM 评估专业化</td><td>前屈/外展从 4 档改为 6 档（0-30/31-60/61-90/91-120/121-150/151-180）；外旋改为 5 动作累计积分；内旋改为拇指触背位置法</td><td><span class="badge badge-success">已实施</span></td></tr>
+    <tr><td>7</td><td>肌力评估自评化</td><td>从"提重物"改为 CMS 原始抗阻测试的自评描述（侧平举 90° 抗阻 5 秒，力量等级 0-25 分）</td><td><span class="badge badge-success">已实施</span></td></tr>
+  </table>
+</section>
+
+<section id="layers">
+  <h2>三、7层用户分层体系</h2>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">基于 FPP（Function-Pain-Phase）综合评分，将原有 3 层风险分级升级为 7 层精细用户分层。当前版本在肩/膝/腰三部位分别采用 CMS / KOOS / ODI 量表进行功能评分，结合疼痛程度与病程分期实现分层。</p>
+
+  <div class="layer-card" style="border-left-color: var(--success)">
+    <div class="layer-code">L0</div>
+    <div class="layer-name">无症状</div>
+    <div class="layer-action">预防性体态动作 + 体态教育</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #22c55e">
+    <div class="layer-code">L1</div>
+    <div class="layer-name">轻症</div>
+    <div class="layer-action">居家观察 + 休息冰敷保护（急性期不建议康复训练）</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #84cc16">
+    <div class="layer-code">L2</div>
+    <div class="layer-name">慢性疼痛</div>
+    <div class="layer-action">结构化进阶康复方案</div>
+  </div>
+  <div class="layer-card" style="border-left-color: var(--warning)">
+    <div class="layer-code">L3</div>
+    <div class="layer-name">保守处理适配</div>
+    <div class="layer-action">标准康复动作包</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #f97316">
+    <div class="layer-code">L4</div>
+    <div class="layer-name">专科评估指征</div>
+    <div class="layer-action">建议线下专科评估 + 附近康复机构入口</div>
+  </div>
+  <div class="layer-card" style="border-left-color: #8b5cf6">
+    <div class="layer-code">L5</div>
+    <div class="layer-name">术后康复期</div>
+    <div class="layer-action">术后专用渐进方案（需医生许可）</div>
+  </div>
+  <div class="layer-card" style="border-left-color: var(--danger)">
+    <div class="layer-code">L6</div>
+    <div class="layer-name">高风险排除</div>
+    <div class="layer-action">禁止自行练习，建议立即就医 + 急诊指南</div>
+  </div>
+
+  <h3>3.1 复评提醒策略</h3>
+  <table>
+    <tr><th>层级</th><th>复评时间</th><th>提醒内容</th><th>对比指标</th></tr>
+    <tr><td>L0</td><td>不复评</td><td>-</td><td>-</td></tr>
+    <tr><td>L1</td><td>5天后</td><td>建议复评对比功能改善</td><td>疼痛/功能</td></tr>
+    <tr><td>L2</td><td>14天后</td><td>建议复评追踪康复进度</td><td>疼痛/功能</td></tr>
+    <tr><td>L3</td><td>14天后</td><td>建议复评对比功能评分变化</td><td>疼痛/功能</td></tr>
+    <tr><td>L4</td><td>7天后</td><td>建议完成线下评估后再次填写</td><td>疼痛/功能</td></tr>
+    <tr><td>L5</td><td>14天后</td><td>术后2周复评调整方案</td><td>疼痛/功能</td></tr>
+    <tr><td>L6</td><td>不复评</td><td>-</td><td>-</td></tr>
+  </table>
+
+  <h3>3.2 结果页行动卡片</h3>
+  <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">L4 和 L6 结果页底部增加行动卡片，缩短用户转化路径：</p>
+  
+  <div class="action-card" style="border-left-color: var(--warning)">
+    <span class="icon">🏥</span>
+    <span class="label">L4：查找附近康复机构</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--warning)">
+    <span class="icon">📞</span>
+    <span class="label">L4：预约线上咨询</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--danger)">
+    <span class="icon">🏥</span>
+    <span class="label">L6：就医指南</span>
+  </div>
+  <div class="action-card" style="border-left-color: var(--danger)">
+    <span class="icon">🚑</span>
+    <span class="label">L6：查找附近医院急诊</span>
+  </div>
+</section>
+
+<section id="algorithm">
+  <h2>四、分层算法</h2>
+
+  <h3>4.1 通用硬排除（直接判定 L6 高风险）</h3>
+  <div class="code-block">
+Step 1: 硬排除 → L6 高风险
+  → 术后未获医生许可
+  → 急性早期：疼痛发生 1周内 或 1-2周
+  → 红旗症状（按部位）：
+     · 肩部：畸形/严重肿胀/麻木/持续加重/发热
+     · 膝部：畸形/严重肿胀/麻木/持续加重/发热
+     · 腰部：大小便异常/会阴麻木/下肢无力/严重外伤/发热/持续加重
+  </div>
+
+  <h3>4.2 部位评分算法</h3>
+  <div class="code-block">
+Step 2: 肩痛 — Constant-Murley 2008 核心 10 题
+  疼痛(0-15) + ADL睡眠(0-2) + ADL工作(0-4) + ADL休闲(0-4)
+  + ADL位置(0-10) + ROM前屈(0-10) + ROM外展(0-10)
+  + ROM外旋(0-10) + ROM内旋(0-10) + 肌力(0-25)
+  = 总分 0-100
+  · ≥70 分 → 低风险（L2/L3）
+  · 50-69 分 → 中风险（L3/L4）
+  · <50 分 → 高风险 → L4 专科评估指征
+
+Step 3: 膝痛 — KOOS 精简版 5 维度
+  症状(3题) + 疼痛(4题) + ADL(6题) + 运动(2题) + QOL(2题) = 17核心题
+  各维度标准分 = 100 - (原始分/题数 × 25)，范围 0-100
+  综合分 = 5 维度平均分
+  · 综合分 ≥70 → 低风险
+  · 综合分 45-69 → 中风险
+  · 综合分 <45 → 高风险
+
+Step 4: 腰痛 — 改良 ODI 6 题 + 红旗筛查
+  ODI 总分 0-28（7题 × 每题0-4分）
+  · ≤8 分 → 低风险
+  · 9-16 分 → 中风险
+  · ≥17 分 → 高风险
+  附加规则：
+  · 疼痛≥5分 / 弯腰明显受限 / 久坐加重 / 下肢放射痛 → 中风险
+  </div>
+
+  <h3>4.3 运动心理评分</h3>
+  <div class="code-block">
+Step 5: 运动心理专项（6题，满分 18 分）
+  sp_1 ~ sp_6，每题 0-3 分
+  · ≤6 分 → 心理状态良好
+  · 7-11 分 → 存在一定波动，建议关注
+  · ≥12 分 → 风险较高，建议寻求运动心理支持
+  注：运动心理评分仅作参考，不参与整体风险分层硬判定
+  </div>
+</section>
+
+
+<section id="shoulder">
+  <h2>模块一 · 肩痛自查（Constant-Murley 2008 改良自评版）</h2>
+  <p class="section-hint">
+    改编自 Constant-Murley Shoulder Score（CMS）2008 版，核心 10 题总分 100 分，覆盖疼痛、日常生活能力、活动范围与肌力四个维度。新增 6 题为运动功能专项，仅作参考不计入总分。
+  </p>
+
+  <h3>A. 疼痛（15 分）— 题 S1</h3>
+  <div class="question-block">
+    <span class="q-number">S1</span><span class="q-text">请指出在过去 24 小时内，您在日常活动中感受到的最严重肩痛程度</span>
+    <div class="q-meta">来源：CMS 疼痛项（2008 版 VAS 自评化） | 字段：cm_pain | 分值：0 ~ 15</div>
+    <ul class="q-options">
+      <li>15 分 — 完全无痛</li>
+      <li>12 分 — 轻度疼痛，不影响日常活动</li>
+      <li>9 分 — 轻-中度疼痛，日常活动略受影响</li>
+      <li>6 分 — 中度疼痛，部分影响日常活动</li>
+      <li>3 分 — 重度疼痛，严重影响日常活动</li>
+      <li>0 分 — 无法忍受的疼痛</li>
+    </ul>
+    <div class="info-box">
+      ℹ️ CMS 的疼痛评估关注的是患者在<strong>日常活动中</strong>的疼痛体验，而非休息状态下的疼痛。此外，本量表不适用于评估发作性剧烈疼痛（如肩关节脱位时的急性疼痛）。
+    </div>
+  </div>
+
+  <h3>B. 日常生活能力（20 分）— 题 S2 ~ S5</h3>
+  <div class="question-block">
+    <span class="q-number">S2</span><span class="q-text">您的夜间睡眠是否因肩痛而受到干扰？</span>
+    <div class="q-meta">来源：CMS ADL 睡眠项 | 字段：cm_adl_sleep | 分值：0 ~ 2</div>
+    <ul class="q-options">
+      <li>2 分 — 睡眠正常，肩痛未对正常睡眠造成明显干扰</li>
+      <li>1 分 — 偶尔因肩痛醒来，但能通过调整姿势重新入睡</li>
+      <li>0 分 — 因肩痛难以入睡或无法获得合理的夜间睡眠</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S3</span><span class="q-text">您的肩部状况对您的工作或日常活动有多大限制？</span>
+    <div class="q-meta">来源：CMS ADL 工作/日常活动项（2008 版 VAS） | 字段：cm_adl_work | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>4 分 — 完全不受限，能完成所有正常工作/日常活动</li>
+      <li>3 分 — 轻度受限，大部分活动不受影响</li>
+      <li>2 分 — 中度受限，部分工作/活动受到影响</li>
+      <li>1 分 — 严重受限，大部分工作/活动难以完成</li>
+      <li>0 分 — 几乎无法完成任何工作/日常活动</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S4</span><span class="q-text">您的肩部状况对您的休闲或体育活动有多大限制？</span>
+    <div class="q-meta">来源：CMS ADL 休闲/体育活动项（2008 版 VAS） | 字段：cm_adl_leisure | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>4 分 — 完全不受限，能参加所有正常的休闲/体育活动</li>
+      <li>3 分 — 轻度受限，大部分活动不受影响</li>
+      <li>2 分 — 中度受限，部分休闲/体育活动受到影响</li>
+      <li>1 分 — 严重受限，大部分活动难以参加</li>
+      <li>0 分 — 几乎无法参加任何休闲/体育活动</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S5</span><span class="q-text">在不引起疼痛的情况下，您的手臂能舒适地抬到哪个位置？</span>
+    <div class="q-meta">来源：CMS ADL 手臂无痛活动位置项 | 字段：cm_adl_reach | 分值：0 ~ 10</div>
+    <ul class="q-options">
+      <li>10 分 — 超过头顶，能完成所有过顶活动（如取高处物品、梳头等）</li>
+      <li>8 分 — 到达头顶，能触及头顶但无法超过</li>
+      <li>6 分 — 到达颈部，能触及颈部（如梳后面的头发）</li>
+      <li>4 分 — 到达剑突（胸骨下端）</li>
+      <li>2 分 — 到达腰部水平</li>
+      <li>0 分 — 腰部以下，几乎无法主动抬臂</li>
+    </ul>
+  </div>
+
+  <h3>C. 肩关节活动范围（40 分）— 题 S6 ~ S9</h3>
+  <div class="question-block">
+    <span class="q-number">S6</span><span class="q-text">手臂向前上方抬起（肩前屈），您能达到的最大角度约为？（可对着镜子或请他人协助观察）</span>
+    <div class="q-meta">来源：CMS ROM 前屈项 | 字段：cm_rom_flexion | 分值：0 ~ 10</div>
+    <ul class="q-options">
+      <li>10 分 — 151° ~ 180°（能完全上举，手臂贴近耳朵）</li>
+      <li>8 分 — 121° ~ 150°（能举到接近垂直）</li>
+      <li>6 分 — 91° ~ 120°（能举到斜上方）</li>
+      <li>4 分 — 61° ~ 90°（能举到与肩同高或略高）</li>
+      <li>2 分 — 31° ~ 60°（能举到腰部以上、肩部以下）</li>
+      <li>0 分 — 0° ~ 30°（几乎无法抬起）</li>
+    </ul>
+    <div class="info-box">
+      ℹ️ 原始 CMS 使用量角器由医师测量无痛主动活动范围。自评版请用户对着镜子或请他人协助，估算自己无痛情况下的最大活动角度。
+    </div>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S7</span><span class="q-text">手臂向身体侧方抬起（肩外展），您能达到的最大角度约为？</span>
+    <div class="q-meta">来源：CMS ROM 外展项 | 字段：cm_rom_abduction | 分值：0 ~ 10</div>
+    <ul class="q-options">
+      <li>10 分 — 151° ~ 180°</li>
+      <li>8 分 — 121° ~ 150°</li>
+      <li>6 分 — 91° ~ 120°</li>
+      <li>4 分 — 61° ~ 90°</li>
+      <li>2 分 — 31° ~ 60°</li>
+      <li>0 分 — 0° ~ 30°</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S8</span><span class="q-text">请尝试以下 5 个动作，在不引起疼痛的情况下能完成几个？（每个动作成功得 2 分）</span>
+    <div class="q-meta">来源：CMS ROM 外旋项（2008 版累计积分法） | 字段：cm_rom_external | 分值：0 ~ 10</div>
+    <ul class="q-options">
+      <li>10 分 — 能完成全部 5 个动作</li>
+      <li>8 分 — 能完成 4 个动作</li>
+      <li>6 分 — 能完成 3 个动作</li>
+      <li>4 分 — 能完成 2 个动作</li>
+      <li>2 分 — 能完成 1 个动作</li>
+      <li>0 分 — 均无法完成</li>
+    </ul>
+    <div class="info-box">
+      ℹ️ 5 个动作分别为：①手放于头后，肘部向前；②手放于头后，肘部向侧方/后方；③手放于头顶，肘部向前；④手放于头顶，肘部向侧方/后方；⑤手从头顶完全抬起（不触碰头部）。每个动作必须能独立完成且不引起疼痛才能得分。
+    </div>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S9</span><span class="q-text">将患侧手从大腿外侧开始，沿着脊柱向上移动（拇指作为指示点），拇指能触及的最高位置是？</span>
+    <div class="q-meta">来源：CMS ROM 内旋项（2008 版拇指触背法） | 字段：cm_rom_internal | 分值：0 ~ 10</div>
+    <ul class="q-options">
+      <li>10 分 — 肩胛间区（两侧肩胛骨之间，T7 及以上）</li>
+      <li>8 分 — 第 12 胸椎水平（胸部与腰部交界处）</li>
+      <li>6 分 — 腰部（L3 棘突水平）</li>
+      <li>4 分 — 腰骶关节（腰椎与骶骨连接处）</li>
+      <li>2 分 — 臀部（臀肌区域）</li>
+      <li>0 分 — 大腿外侧（无法将手放到背后）</li>
+    </ul>
+  </div>
+
+  <h3>D. 肌力（25 分）— 题 S10</h3>
+  <div class="question-block">
+    <span class="q-number">S10</span><span class="q-text">将手臂向侧方抬到与肩同高，请他人或自己用手向下轻压您的手腕，您能维持该位置抗阻约 5 秒的力量如何？</span>
+    <div class="q-meta">来源：CMS 肌力项（2008 版测力计自评化） | 字段：cm_strength | 分值：0 ~ 25</div>
+    <ul class="q-options">
+      <li>25 分 — 正常力量，能轻松对抗较大阻力，与健侧基本一致</li>
+      <li>20 分 — 轻度减弱，能对抗中等阻力但力量略差于健侧</li>
+      <li>15 分 — 中度减弱，只能对抗较小阻力</li>
+      <li>10 分 — 明显减弱，几乎无法对抗阻力，手臂容易下落</li>
+      <li>5 分 — 非常弱，手臂难以维持在侧平举位置</li>
+      <li>0 分 — 完全无力，无法将手臂抬到侧平举位置</li>
+    </ul>
+    <div class="info-box">
+      ℹ️ 原始 CMS 使用便携式肌力计测量，患者肩外展 90°、前臂旋前体位下抗阻 5 秒，每磅对应 1 分（最高 25 分）。自评版改为力量等级自评，如无法达到 90° 外展位或测量时引起疼痛，则对应最低等级。
+    </div>
+  </div>
+
+  <h3>E. 运动功能专项（不计入 CMS 总分）— 题 S11 ~ S16</h3>
+  <div class="info-box">
+    ℹ️ 以下 6 题为新增运动功能专项，仅供个性化建议参考，<strong>不计入 Constant-Murley 总分</strong>。覆盖篮球、羽毛球、游泳、健身等常见大众运动场景。
+  </div>
+  <div class="question-block">
+    <span class="q-number">S11</span><span class="q-text">篮球/排球类过顶动作（投篮、扣球、发球、抓高处物品）困难程度</span>
+    <div class="q-meta">字段：sport_overhead | 分值：0 ~ 3（数值越大越困难）</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难，可正常完成</li>
+      <li>1 分 — 轻度困难，投篮/扣球时略有不适</li>
+      <li>2 分 — 明显困难，需减小幅度或改用另一只手</li>
+      <li>3 分 — 严重困难，几乎无法完成过顶动作</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S12</span><span class="q-text">健身推举/俯卧撑类推压动作（杠铃推举、俯卧撑、卧推）困难程度</span>
+    <div class="q-meta">字段：sport_push_pull | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难，可正常完成</li>
+      <li>1 分 — 轻度困难，需减轻重量或改为跪姿俯卧撑</li>
+      <li>2 分 — 明显困难，只能做很轻的推举或 wall push-up</li>
+      <li>3 分 — 严重困难，几乎无法完成任何推压动作</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S13</span><span class="q-text">羽毛球/乒乓球/网球挥拍动作（杀球、扣杀、正手抽球）困难程度</span>
+    <div class="q-meta">字段：sport_swing | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难，可正常挥拍</li>
+      <li>1 分 — 轻度困难，大力击球时略有不适</li>
+      <li>2 分 — 明显困难，需减小挥拍幅度或避免杀球</li>
+      <li>3 分 — 严重困难，几乎无法挥拍</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S14</span><span class="q-text">游泳划水动作（自由泳划臂、蛙泳划水、蝶泳）困难程度</span>
+    <div class="q-meta">字段：sport_support | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难，可正常游泳</li>
+      <li>1 分 — 轻度困难，长距离游泳后肩部酸胀</li>
+      <li>2 分 — 明显困难，只能改游蛙泳腿或短距离</li>
+      <li>3 分 — 严重困难，几乎无法游泳</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S15</span><span class="q-text">日常提重物/背包/抱小孩（买菜、背双肩包、抱孩子）困难程度</span>
+    <div class="q-meta">字段：sport_carry | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难，可正常负重</li>
+      <li>1 分 — 轻度困难，需减少负重或换另一侧</li>
+      <li>2 分 — 明显困难，只能提很轻的物品</li>
+      <li>3 分 — 严重困难，几乎无法提任何重物</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S16</span><span class="q-text">肩关节稳定性感受（松动/不稳/即将脱位）</span>
+    <div class="q-meta">字段：sport_stability | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 稳定，无异常感受</li>
+      <li>1 分 — 偶尔感觉轻微松动，但不影响日常活动</li>
+      <li>2 分 — 某些动作（如突然举手）会感觉不稳，有恐惧感</li>
+      <li>3 分 — 明显不稳，担心关节会脱位</li>
+    </ul>
+  </div>
+
+  <h3>F. 病程与筛查 — 题 S17 ~ S19</h3>
+  <div class="question-block">
+    <span class="q-number">S17</span><span class="q-text">疼痛开始至今有多长时间？</span>
+    <div class="q-meta">字段：injury_time | 类型：单选 | <span class="badge badge-danger">急性早期硬排除</span></div>
+    <ul class="q-options">
+      <li>1周内（急性早期）</li>
+      <li>1-2周（急性期）</li>
+      <li>2-4周（亚急性期）</li>
+      <li>超过1个月（慢性期）</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>选择"1周内"或"1-2周" → 直接判定为<strong>高风险</strong>。急性早期以休息、冰敷和保护为主，不建议自行康复训练。
+    </div>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S18</span><span class="q-text">过去 2 周内是否出现以下任何症状？（多选）</span>
+    <div class="q-meta">字段：red_flags | 类型：多选 | <span class="badge badge-danger">红旗指标</span></div>
+    <ul class="q-options">
+      <li>肩部严重外伤或跌倒后无法活动</li>
+      <li>肩部明显畸形或关节脱位</li>
+      <li>持续剧烈疼痛，夜间痛醒</li>
+      <li>手臂麻木、无力或感觉异常</li>
+      <li>手部发凉、发紫或肿胀</li>
+      <li>发热伴随肩部红肿</li>
+      <li>以上均无</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>勾选任意一项（除"以上均无"） → 直接判定为<strong>高风险</strong>，建议立即就医，不提供康复方案。
+    </div>
+  </div>
+  <div class="question-block">
+    <span class="q-number">S19</span><span class="q-text">是否为术后状态？</span>
+    <div class="q-meta">字段：post_op_status | 类型：单选</div>
+    <ul class="q-options">
+      <li>无手术史</li>
+      <li>术后，且已获得医生许可进行康复训练</li>
+      <li>术后，尚未获得医生许可</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>选择"术后，尚未获得医生许可" → 直接判定为<strong>高风险</strong>。
+    </div>
+  </div>
+</section>
+
+
+<section id="knee">
+  <h2>模块二 · 膝痛自查（KOOS 精简版）</h2>
+  <p class="section-hint">
+    改编自 KOOS（Knee Injury and Osteoarthritis Outcome Score）膝关节损伤与骨关节炎结果评分，从原版 42 题精简为 17 题核心评估 + 3 题筛查。覆盖症状、疼痛、日常生活功能、运动/休闲功能、生活质量 5 个维度，各维度独立计分。
+  </p>
+
+  <h3>A. 症状维度（回忆期：过去一周）— 题 K1 ~ K3</h3>
+  <div class="question-block">
+    <span class="q-number">K1</span><span class="q-text">您的膝关节有肿胀吗？</span>
+    <div class="q-meta">来源：KOOS 症状 S1 | 字段：koos_s1 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 很少</li>
+      <li>2 分 — 有时</li>
+      <li>3 分 — 经常</li>
+      <li>4 分 — 总是</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K2</span><span class="q-text">您的膝关节在活动时是否会卡住或挂住？</span>
+    <div class="q-meta">来源：KOOS 症状 S2 | 字段：koos_s2 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 很少</li>
+      <li>2 分 — 有时</li>
+      <li>3 分 — 经常</li>
+      <li>4 分 — 总是</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K3</span><span class="q-text">早晨醒来后，您膝关节僵硬的严重程度如何？</span>
+    <div class="q-meta">来源：KOOS 症状 S6 | 字段：koos_s6 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无</li>
+      <li>1 分 — 轻度</li>
+      <li>2 分 — 中度</li>
+      <li>3 分 — 重度</li>
+      <li>4 分 — 极重度</li>
+    </ul>
+  </div>
+
+  <h3>B. 疼痛维度（回忆期：过去一周）— 题 K4 ~ K7</h3>
+  <div class="question-block">
+    <span class="q-number">K4</span><span class="q-text">您多久会经历一次膝关节疼痛？</span>
+    <div class="q-meta">来源：KOOS 疼痛 P1 | 字段：koos_p1 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 每月</li>
+      <li>2 分 — 每周</li>
+      <li>3 分 — 每天</li>
+      <li>4 分 — 总是</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K5</span><span class="q-text">过去一周，在平坦路面上行走时，您感受到的疼痛程度如何？</span>
+    <div class="q-meta">来源：KOOS 疼痛 P5 | 字段：koos_p5 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无</li>
+      <li>1 分 — 轻度</li>
+      <li>2 分 — 中度</li>
+      <li>3 分 — 重度</li>
+      <li>4 分 — 极重度</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K6</span><span class="q-text">过去一周，在上楼梯或下楼梯时，您感受到的疼痛程度如何？</span>
+    <div class="q-meta">来源：KOOS 疼痛 P6 | 字段：koos_p6 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无</li>
+      <li>1 分 — 轻度</li>
+      <li>2 分 — 中度</li>
+      <li>3 分 — 重度</li>
+      <li>4 分 — 极重度</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K7</span><span class="q-text">过去一周，夜间躺在床上时，您感受到的疼痛程度如何？</span>
+    <div class="q-meta">来源：KOOS 疼痛 P7 | 字段：koos_p7 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无</li>
+      <li>1 分 — 轻度</li>
+      <li>2 分 — 中度</li>
+      <li>3 分 — 重度</li>
+      <li>4 分 — 极重度</li>
+    </ul>
+  </div>
+
+  <h3>C. 日常生活功能（回忆期：过去一周）— 题 K8 ~ K13</h3>
+  <div class="question-block">
+    <span class="q-number">K8</span><span class="q-text">下楼梯时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A1 | 字段：koos_a1 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K9</span><span class="q-text">上楼梯时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A2 | 字段：koos_a2 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K10</span><span class="q-text">从座位上起身时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A3 | 字段：koos_a3 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K11</span><span class="q-text">弯腰到地面/捡起物品时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A5 | 字段：koos_a5 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K12</span><span class="q-text">穿袜子/长袜时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A9 | 字段：koos_a9 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K13</span><span class="q-text">上厕所（坐下/起身）时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS ADL A15 | 字段：koos_a15 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+
+  <h3>D. 运动/休闲功能 — 题 K14 ~ K15</h3>
+  <div class="question-block">
+    <span class="q-number">K14</span><span class="q-text">蹲下时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS 运动 SP1 | 字段：koos_sp1 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K15</span><span class="q-text">跑步时，膝关节问题带来的困难程度？</span>
+    <div class="q-meta">来源：KOOS 运动 SP2 | 字段：koos_sp2 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 轻度困难</li>
+      <li>2 分 — 中度困难</li>
+      <li>3 分 — 重度困难</li>
+      <li>4 分 — 极重度困难</li>
+    </ul>
+  </div>
+
+  <h3>E. 生活质量 — 题 K16 ~ K17</h3>
+  <div class="question-block">
+    <span class="q-number">K16</span><span class="q-text">您多久会意识到自己的膝关节问题？</span>
+    <div class="q-meta">来源：KOOS QOL Q1 | 字段：koos_q1 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 很少</li>
+      <li>2 分 — 有时</li>
+      <li>3 分 — 经常</li>
+      <li>4 分 — 总是</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K17</span><span class="q-text">您对自己膝关节缺乏信心的程度有多严重？</span>
+    <div class="q-meta">来源：KOOS QOL Q3 | 字段：koos_q3 | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 完全没有</li>
+      <li>1 分 — 轻度</li>
+      <li>2 分 — 中度</li>
+      <li>3 分 — 重度</li>
+      <li>4 分 — 极重度</li>
+    </ul>
+  </div>
+
+  <h3>F. 病程与筛查 — 题 K18 ~ K20</h3>
+  <div class="question-block">
+    <span class="q-number">K18</span><span class="q-text">疼痛开始至今有多长时间？</span>
+    <div class="q-meta">字段：injury_time | 类型：单选 | <span class="badge badge-danger">急性早期硬排除</span></div>
+    <ul class="q-options">
+      <li>1周内（急性早期）</li>
+      <li>1-2周（急性期）</li>
+      <li>2-4周（亚急性期）</li>
+      <li>超过1个月（慢性期）</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>选择"1周内"或"1-2周" → 直接判定为<strong>高风险</strong>。急性早期以休息、冰敷和保护为主，不建议自行康复训练。
+    </div>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K19</span><span class="q-text">过去 2 周内，是否出现过以下任何症状？（多选）</span>
+    <div class="q-meta">字段：k_red_flags | 类型：多选 | <span class="badge badge-danger">红旗指标</span></div>
+    <ul class="q-options">
+      <li>膝关节严重外伤或跌倒后无法承重</li>
+      <li>膝关节明显畸形或无法伸直</li>
+      <li>持续剧烈疼痛，夜间痛醒</li>
+      <li>小腿肿胀、发热、发红</li>
+      <li>膝关节"卡住"或"锁死"感</li>
+      <li>膝关节突然"打软腿"或失控</li>
+      <li>以上均无</li>
+    </ul>
+  </div>
+  <div class="question-block">
+    <span class="q-number">K20</span><span class="q-text">是否为术后状态？</span>
+    <div class="q-meta">字段：post_op_status | 类型：单选</div>
+    <ul class="q-options">
+      <li>无手术史</li>
+      <li>术后，且已获得医生许可进行康复训练</li>
+      <li>术后，尚未获得医生许可</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>选择"术后，尚未获得医生许可" → 直接判定为<strong>高风险</strong>。
+    </div>
+  </div>
+</section>
+
+<section id="lowback">
+  <h2>模块三 · 腰痛自查（改良 ODI / STarT Back + 红旗筛查）</h2>
+  <p class="section-hint">
+    共 8 题，含日常活动功能评估与红旗症状筛查。总分越高表示功能障碍越严重。
+  </p>
+
+  <div class="question-block">
+    <span class="q-number">L1</span><span class="q-text">过去 2 周内，腰部疼痛对以下日常活动的影响程度？（疼痛强度）</span>
+    <div class="q-meta">字段：lbp_pain | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无疼痛</li>
+      <li>1 分 — 轻度疼痛（不影响活动）</li>
+      <li>2 分 — 中度疼痛（活动略受限）</li>
+      <li>3 分 — 重度疼痛（活动明显受限）</li>
+      <li>4 分 — 极重度疼痛（几乎无法活动）</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L2</span><span class="q-text">个人护理（如穿衣、洗澡）时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_care | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L3</span><span class="q-text">提物或搬重物时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_lift | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L4</span><span class="q-text">行走时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_walk | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L5</span><span class="q-text">坐姿时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_sit | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L6</span><span class="q-text">站立时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_stand | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L7</span><span class="q-text">社交活动（如外出、聚会）时，腰痛是否影响你的活动？</span>
+    <div class="q-meta">字段：lbp_social | 分值：0 ~ 4</div>
+    <ul class="q-options">
+      <li>0 分 — 无困难</li>
+      <li>1 分 — 有点困难</li>
+      <li>2 分 — 中等困难</li>
+      <li>3 分 — 非常困难</li>
+      <li>4 分 — 做不到</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L8</span><span class="q-text">疼痛开始至今有多长时间？</span>
+    <div class="q-meta">字段：injury_time | 类型：单选 | <span class="badge badge-danger">急性早期硬排除</span></div>
+    <ul class="q-options">
+      <li>1周内（急性早期）</li>
+      <li>1-2周（急性期）</li>
+      <li>2-4周（亚急性期）</li>
+      <li>超过1个月（慢性期）</li>
+    </ul>
+    <div class="alert-box">
+      <strong>处理规则：</strong>选择"1周内"或"1-2周" → 直接判定为<strong>高风险</strong>。急性早期以休息、冰敷和保护为主，不建议自行康复训练。
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">L9</span><span class="q-text">过去 2 周内，是否出现过以下任何症状？（多选）</span>
+    <div class="q-meta">字段：lbp_red_flags | 类型：多选 | <span class="badge badge-danger">红旗指标</span></div>
+    <ul class="q-options">
+      <li>腰部严重外伤或跌倒后无法活动</li>
+      <li>持续剧烈疼痛，夜间痛醒</li>
+      <li>下肢麻木、无力或感觉异常</li>
+      <li>大小便失禁或排尿困难</li>
+      <li>发热伴随腰部红肿</li>
+      <li>近期不明原因体重下降</li>
+      <li>以上均无</li>
+    </ul>
+  </div>
+</section>
+
+<section id="mental">
+  <h2>模块四 · 运动心理测评（运动心理专项）</h2>
+  <p class="section-hint">
+    仅保留 6 道运动心理专项题，聚焦运动员/运动爱好者因伤病带来的心理影响。已删除 GAD-7 和 PHQ-9 通用量表。
+  </p>
+
+  <div class="question-block">
+    <span class="q-number">M1</span><span class="q-text">因伤病无法训练/比赛，我感到焦虑</span>
+    <div class="q-meta">字段：sp_1 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">M2</span><span class="q-text">我担心恢复不到之前的运动水平</span>
+    <div class="q-meta">字段：sp_2 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">M3</span><span class="q-text">重返运动时，我感到害怕或不确定</span>
+    <div class="q-meta">字段：sp_3 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">M4</span><span class="q-text">停训让我情绪更低落</span>
+    <div class="q-meta">字段：sp_4 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">M5</span><span class="q-text">我过度担心同一部位再受伤</span>
+    <div class="q-meta">字段：sp_5 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+
+  <div class="question-block">
+    <span class="q-number">M6</span><span class="q-text">我对熟悉的运动动作失去信心</span>
+    <div class="q-meta">字段：sp_6 | 分值：0 ~ 3</div>
+    <ul class="q-options">
+      <li>0 分 — 从不</li>
+      <li>1 分 — 偶尔</li>
+      <li>2 分 — 经常</li>
+      <li>3 分 — 总是</li>
+    </ul>
+  </div>
+</section>
+
+<section id="scoring">
+  <h2>📊 评分与分层规则</h2>
+
+  <h3>一、通用硬排除规则（红旗 + 术后未许可）</h3>
+  <table>
+    <thead>
+      <tr><th>触发条件</th><th>风险等级</th><th>处理</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>勾选任意红旗症状（除"以上均无"）</td>
+        <td><span class="badge badge-danger">高风险</span></td>
+        <td>立即建议就医，不生成康复方案</td>
+      </tr>
+      <tr>
+        <td>术后 + 尚未获得医生许可</td>
+        <td><span class="badge badge-danger">高风险</span></td>
+        <td>提示"请先获得主治医生许可后再开始康复训练"</td>
+      </tr>
+      <tr>
+        <td>疼痛处于急性早期（1周内或1-2周）</td>
+        <td><span class="badge badge-danger">高风险</span></td>
+        <td>急性期以休息、冰敷和保护为主，不建议自行康复训练</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>二、肩痛评分（Constant-Murley 核心 10 题）</h3>
+  <table>
+    <thead>
+      <tr><th>维度</th><th>题号</th><th>满分</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>疼痛</td><td>S1</td><td>15 分</td></tr>
+      <tr><td>日常活动（睡眠）</td><td>S2</td><td>2 分</td></tr>
+      <tr><td>日常活动（工作/日常）</td><td>S3</td><td>4 分</td></tr>
+      <tr><td>日常活动（休闲/体育）</td><td>S4</td><td>4 分</td></tr>
+      <tr><td>日常活动（手臂无痛位置）</td><td>S5</td><td>10 分</td></tr>
+      <tr><td>活动范围（前屈）</td><td>S6</td><td>10 分</td></tr>
+      <tr><td>活动范围（外展）</td><td>S7</td><td>10 分</td></tr>
+      <tr><td>活动范围（外旋）</td><td>S8</td><td>10 分</td></tr>
+      <tr><td>活动范围（内旋）</td><td>S9</td><td>10 分</td></tr>
+      <tr><td>肌力</td><td>S10</td><td>25 分</td></tr>
+    </tbody>
+    <tfoot>
+      <tr style="font-weight:700;background:var(--gray-50)">
+        <td colspan="2">核心总分（满分 100）</td>
+        <td>100 分</td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="alert-box">
+    <strong>新增 6 题运动功能专项（S11-S16）不计入总分，仅用于个性化建议。</strong>
+  </div>
+
+  <h3>三、膝痛评分（KOOS 精简版 5 维度）</h3>
+  <table>
+    <thead>
+      <tr><th>维度</th><th>题号</th><th>字段</th><th>题目数</th><th>标准分公式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>症状</td><td>K1 ~ K3</td><td>koos_s1, koos_s2, koos_s6</td><td>3</td><td>100 - (原始分/3 × 25)</td></tr>
+      <tr><td>疼痛</td><td>K4 ~ K7</td><td>koos_p1, koos_p5, koos_p6, koos_p7</td><td>4</td><td>100 - (原始分/4 × 25)</td></tr>
+      <tr><td>日常生活</td><td>K8 ~ K13</td><td>koos_a1, a2, a3, a5, a9, a15</td><td>6</td><td>100 - (原始分/6 × 25)</td></tr>
+      <tr><td>运动/休闲</td><td>K14 ~ K15</td><td>koos_sp1, koos_sp2</td><td>2</td><td>100 - (原始分/2 × 25)</td></tr>
+      <tr><td>生活质量</td><td>K16 ~ K17</td><td>koos_q1, koos_q3</td><td>2</td><td>100 - (原始分/2 × 25)</td></tr>
+      <tr><td colspan="2">病程</td><td>K18</td><td>injury_time</td><td>急性早期硬排除</td></tr>
+      <tr><td colspan="2">红旗</td><td>K19</td><td>k_red_flags</td><td>高风险触发</td></tr>
+      <tr><td colspan="2">术后</td><td>K20</td><td>post_op_status</td><td>未许可→高风险</td></tr>
+    </tbody>
+    <tfoot>
+      <tr style="font-weight:700;background:var(--gray-50)">
+        <td colspan="3">综合标准分（5 维度平均）</td>
+        <td>17 核心题</td>
+        <td>0 ~ 100 分</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h3>四、腰痛评分（改良 ODI 6 题 + 病程 + 红旗筛查）</h3>
+  <table>
+    <thead>
+      <tr><th>题号</th><th>字段</th><th>每题分值</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>L1 ~ L7</td><td>lbp_pain ~ lbp_social</td><td>0 ~ 4</td></tr>
+      <tr><td>L8</td><td>injury_time</td><td>急性早期硬排除（不计分）</td></tr>
+      <tr><td>L9</td><td>lbp_red_flags</td><td>红旗筛查（不计分，触发硬排除）</td></tr>
+    </tbody>
+    <tfoot>
+      <tr style="font-weight:700;background:var(--gray-50)">
+        <td colspan="2">ODI 总分（满分 28）</td>
+        <td>28 分</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h3>五、运动心理评分（6 题）</h3>
+  <table>
+    <thead>
+      <tr><th>题号</th><th>字段</th><th>每题分值</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>M1 ~ M6</td><td>sp_1 ~ sp_6</td><td>0 ~ 3</td></tr>
+    </tbody>
+    <tfoot>
+      <tr style="font-weight:700;background:var(--gray-50)">
+        <td colspan="2">总分（满分 18）</td>
+        <td>18 分</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h3>六、风险分层标准</h3>
+  <table>
+    <thead>
+      <tr><th>部位</th><th>低风险</th><th>中风险</th><th>高风险</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>肩部</strong></td>
+        <td>CMS ≥ 70 分</td>
+        <td>CMS 50 ~ 69 分</td>
+        <td>CMS < 50 分</td>
+      </tr>
+      <tr>
+        <td><strong>膝部</strong></td>
+        <td>KOOS 综合 ≥ 70 分</td>
+        <td>KOOS 综合 45 ~ 69 分</td>
+        <td>KOOS 综合 < 45 分</td>
+      </tr>
+      <tr>
+        <td><strong>腰部</strong></td>
+        <td>ODI ≤ 8 分</td>
+        <td>ODI 9 ~ 16 分</td>
+        <td>ODI ≥ 17 分</td>
+      </tr>
+      <tr>
+        <td><strong>运动心理</strong></td>
+        <td>≤ 6 分</td>
+        <td>7 ~ 11 分</td>
+        <td>≥ 12 分</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="info-box">
+    ℹ️ 运动心理评分仅作为建议参考，不参与整体风险分层的硬判定。如运动心理分数 ≥ 12 分，在报告中附加"建议关注心理状态，必要时寻求运动心理咨询"的提示。
+  </div>
+
+  <h3>七、结果页生成规则</h3>
+  <table>
+    <thead>
+      <tr><th>风险等级</th><th>页面色调</th><th>核心建议</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-success">低风险</span></td>
+        <td>绿色</td>
+        <td>恭喜！功能状态良好。给出预防性训练建议（如肩袖稳定训练、核心激活等）</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-warning">中风险</span></td>
+        <td>橙色</td>
+        <td>功能有轻度下降。给出居家康复方案 + 建议 2-4 周后复评</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-danger">高风险</span></td>
+        <td>红色</td>
+        <td>功能明显下降或存在红旗指标。建议就医 + 给出就医科室指引（骨科/康复科/运动医学科）</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer style="text-align:center;padding:40px 0;color:var(--gray-400);font-size:13px;">
+  <p>运动康复综合评估问卷 V2.0 优化版 | 审核日期：2026-05-26</p>
+  <p style="margin-top:4px;">本问卷不构成医疗诊断，仅用于风险评估和康复动作适用性筛查</p>
+</footer>
+
+<button class="print-btn" onclick="window.print()">🖨️ 打印 / 保存 PDF</button>
+
+<script>
+// 目录高亮
+const links = document.querySelectorAll('nav.toc a');
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 120) current = sec.id;
+  });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+</div>
+</body>
+</html>
